@@ -33,7 +33,7 @@
     .logo-link{display:inline-flex;align-items:center;-webkit-tap-highlight-color:transparent;background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;}
     .logo-img{height:28px;display:block;}
     .event-title-row{padding:0 16px 8px;text-align:center;}
-    .event-title{font-size:15px;font-style:normal;color:rgba(255,255,255,.92);letter-spacing:.02em;line-height:1.25;}
+    .event-title{font-size:18px;font-style:normal;color:rgba(255,255,255,.92);letter-spacing:.02em;line-height:1.25;}
     .toolbar{display:flex;gap:8px;padding:0 14px 12px;}
     .search-wrap{flex:1;position:relative;}
     .search-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 12px 9px 32px;font-size:13px;color:#fff;outline:none;font-style:italic;}
@@ -143,6 +143,9 @@
     .modal-actions{display:flex;gap:10px;padding:14px 14px 0;}
     .mcancel{flex:1;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:14px;font-size:13px;cursor:pointer;color:var(--dark);font-style:italic;}
     .msubmit{flex:2;background:var(--blue);border:none;border-radius:12px;padding:14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;font-weight:500;}
+    @media(max-width:480px){
+      .event-title{font-size:24px;line-height:1.28;letter-spacing:0;}
+    }
   </style>
 </head>
 <body>
@@ -244,376 +247,368 @@
   </div>
 
   <script>
-    const WB_NOTE='🖤 Verified STI Results receive BLACK WRISTBANDS';
-    const PRACTICE_PASS='practice';
-    const LS_KEY='ll_door_practice_pass';
+const WB_NOTE='🖤 Verified STI Results receive BLACK WRISTBANDS';
+const PRACTICE_PASS='practice';
+const LS_KEY='ll_door_practice_pass';
 
-    /** Stock-style face placeholders (strangers — not your guests). Same face per seed. */
-    function mockAvatar(seed){
-      let h=0;
-      for(let i=0;i<seed.length;i++)h=(Math.imul(31,h)+seed.charCodeAt(i))|0;
-      const n=(Math.abs(h)%70)+1;
-      return 'https://i.pravatar.cc/400?img='+n;
-    }
+function face(n){ return 'https://i.pravatar.cc/400?img='+n; }
 
-    const EVENTS=[
-      {name:"L'Atelier",date:"March 28th",table:'mock-latelier'},
-      {name:"Do Not Disturb",date:"April 18th",table:'mock-dnd'},
-      {name:"Obscura",date:"May 2nd",table:'mock-obscura'},
-    ];
+const EVENTS=[
+  {name:"L'Atelier",date:"March 28th",table:'mock-latelier'},
+  {name:"Do Not Disturb",date:"April 18th",table:'mock-dnd'},
+  {name:"Obscura",date:"May 2nd",table:'mock-obscura'},
+];
 
-    const MOCK_GUESTS={
-      'mock-latelier':[
-        {id:'ml-01',name:'Jordan Sample',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('JordanSample1'),list:'Guest',nda:'Signed',phone:'555-0101',patron:false,wristband:'Gold',email:'jordan.sample@example.com'},
-        {id:'ml-02',name:'Alex Demo',checkedIn:false,rsvp:'Maybe',photo:mockAvatar('AlexDemo2'),list:'Guest',nda:'No',phone:'555-0102',patron:false,wristband:'',email:'alex.demo@example.com'},
-        {id:'ml-03',name:'Riley Practice',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('RileyP3'),list:'Table',nda:'Signed',phone:'555-0103',patron:true,wristband:'Gold',email:'riley.p@example.com'},
-        {id:'ml-04',name:'Casey Mock',checkedIn:false,rsvp:'',photo:mockAvatar('CaseyM4'),list:'Working',nda:'No',phone:'555-0104',patron:false,wristband:'Black',email:''},
-        {id:'ml-05',name:'Taylor Drill',checkedIn:false,rsvp:'Waitlist',photo:mockAvatar('TaylorD5'),list:'Guest',nda:'No',phone:'555-0105',patron:false,wristband:'',email:'t.drill@example.com'},
-        {id:'ml-06',name:'Morgan Faux',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('MorganF6'),list:'Patron',nda:'Signed',phone:'555-0106',patron:true,wristband:'Gold',email:'morgan.f@example.com'},
-        {id:'ml-07',name:'Jamie Rehearsal',checkedIn:false,rsvp:'',photo:mockAvatar('JamieR7'),list:'Guest',nda:'Signed',phone:'555-0107',patron:false,wristband:'',email:''},
-        {id:'ml-08',name:'Quinn Sandbox',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('QuinnS8'),list:'Table',nda:'No',phone:'555-0108',patron:false,wristband:'',email:'quinn.s@example.com'},
-        {id:'ml-09',name:'Drew Example',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('DrewE9'),list:'Working',nda:'Signed',phone:'555-0109',patron:false,wristband:'Black',email:'drew.ex@example.com'},
-        {id:'ml-10',name:'Skyler Test',checkedIn:false,rsvp:'Maybe',photo:mockAvatar('SkylerT10'),list:'Guest',nda:'No',phone:'555-0110',patron:false,wristband:'',email:''},
-        {id:'ml-11',name:'Reese Placeholder',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('ReeseP11'),list:'Guest',nda:'Signed',phone:'555-0111',patron:false,wristband:'Gold',email:'reese.p@example.com'},
-        {id:'ml-12',name:'Blair Training',checkedIn:false,rsvp:'',photo:mockAvatar('BlairT12'),list:'Table',nda:'No',phone:'555-0112',patron:false,wristband:'',email:'blair.t@example.com'},
-        {id:'ml-13',name:'Cameron DryRun',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('CamDR13'),list:'Guest',nda:'Signed',phone:'555-0113',patron:false,wristband:'',email:''},
-        {id:'ml-14',name:'Parker Pretend',checkedIn:true,rsvp:'VIP',photo:mockAvatar('ParkerP14'),list:'Patron',nda:'Signed',phone:'555-0114',patron:true,wristband:'Gold',email:'parker.p@example.com'},
-      ],
-      'mock-dnd':[
-        {id:'md-01',name:'Sage Sample',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('SageS1'),list:'Guest',nda:'No',phone:'555-0201',patron:false,wristband:'',email:'sage.s@example.com'},
-        {id:'md-02',name:'River Demo',checkedIn:true,rsvp:'',photo:mockAvatar('RiverD2'),list:'Guest',nda:'Signed',phone:'555-0202',patron:false,wristband:'',email:''},
-        {id:'md-03',name:'Phoenix Mock',checkedIn:false,rsvp:'Maybe',photo:mockAvatar('PhoenixM3'),list:'Table',nda:'No',phone:'555-0203',patron:false,wristband:'',email:'phoenix.m@example.com'},
-        {id:'md-04',name:'Rowan Practice',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('RowanP4'),list:'Working',nda:'Signed',phone:'555-0204',patron:false,wristband:'Black',email:'rowan.p@example.com'},
-        {id:'md-05',name:'Emerson Drill',checkedIn:false,rsvp:'Waitlist',photo:mockAvatar('EmeD5'),list:'Guest',nda:'No',phone:'555-0205',patron:false,wristband:'',email:''},
-        {id:'md-06',name:'Harper Faux',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('HarperF6'),list:'Guest',nda:'Signed',phone:'555-0206',patron:false,wristband:'Gold',email:'harper.f@example.com'},
-        {id:'md-07',name:'Finley Rehearsal',checkedIn:true,rsvp:'',photo:mockAvatar('FinleyR7'),list:'Patron',nda:'Signed',phone:'555-0207',patron:true,wristband:'Gold',email:'finley.r@example.com'},
-        {id:'md-08',name:'Hayden Sandbox',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('HaydenS8'),list:'Guest',nda:'No',phone:'555-0208',patron:false,wristband:'',email:''},
-        {id:'md-09',name:'Lennox Example',checkedIn:false,rsvp:'Maybe',photo:mockAvatar('LennoxE9'),list:'Table',nda:'Signed',phone:'555-0209',patron:false,wristband:'',email:'lennox.e@example.com'},
-        {id:'md-10',name:'Marlowe Test',checkedIn:true,rsvp:'Confirmed',photo:mockAvatar('MarloweT10'),list:'Guest',nda:'Signed',phone:'555-0210',patron:false,wristband:'',email:'marlowe.t@example.com'},
-      ],
-      'mock-obscura':[
-        {id:'mo-01',name:'Indigo Sample',checkedIn:false,rsvp:'Premiere',photo:mockAvatar('Indigo1'),list:'Guest',nda:'Signed',phone:'555-0301',patron:false,wristband:'',email:'indigo@example.com'},
-        {id:'mo-02',name:'Vesper Demo',checkedIn:true,rsvp:'Premiere',photo:mockAvatar('Vesper2'),list:'Guest',nda:'Signed',phone:'555-0302',patron:false,wristband:'Gold',email:''},
-        {id:'mo-03',name:'Sable Mock',checkedIn:false,rsvp:'',photo:mockAvatar('Sable3'),list:'Table',nda:'No',phone:'555-0303',patron:false,wristband:'',email:'sable.m@example.com'},
-        {id:'mo-04',name:'Raven Practice',checkedIn:true,rsvp:'Premiere',photo:mockAvatar('Raven4'),list:'Working',nda:'Signed',phone:'555-0304',patron:false,wristband:'Black',email:'raven.p@example.com'},
-        {id:'mo-05',name:'Onyx Drill',checkedIn:false,rsvp:'Maybe',photo:mockAvatar('Onyx5'),list:'Guest',nda:'No',phone:'555-0305',patron:false,wristband:'',email:''},
-        {id:'mo-06',name:'Echo Faux',checkedIn:false,rsvp:'Premiere',photo:mockAvatar('Echo6'),list:'Patron',nda:'Signed',phone:'555-0306',patron:true,wristband:'Gold',email:'echo.f@example.com'},
-        {id:'mo-07',name:'Nova Rehearsal',checkedIn:true,rsvp:'',photo:mockAvatar('Nova7'),list:'Guest',nda:'Signed',phone:'555-0307',patron:false,wristband:'',email:'nova.r@example.com'},
-        {id:'mo-08',name:'Lux Sandbox',checkedIn:false,rsvp:'Premiere',photo:mockAvatar('Lux8'),list:'Table',nda:'No',phone:'555-0308',patron:false,wristband:'',email:''},
-        {id:'mo-09',name:'Solstice Example',checkedIn:false,rsvp:'Confirmed',photo:mockAvatar('Sol9'),list:'Guest',nda:'Signed',phone:'555-0309',patron:false,wristband:'',email:'solstice@example.com'},
-        {id:'mo-10',name:'Eclipse Test',checkedIn:false,rsvp:'Premiere',photo:mockAvatar('Eclipse10'),list:'Guest',nda:'No',phone:'555-0310',patron:false,wristband:'',email:''},
-        {id:'mo-11',name:'Astra Placeholder',checkedIn:true,rsvp:'VIP',photo:mockAvatar('Astra11'),list:'Patron',nda:'Signed',phone:'555-0311',patron:true,wristband:'Gold',email:'astra.p@example.com'},
-      ],
-    };
+const MOCK_GUESTS={
+  'mock-latelier':[
+    {id:'ml-01',name:'Jordan Sample',checkedIn:true,rsvp:'Confirmed',photo:face(1),list:'Guest',nda:'Signed',phone:'555-0101',patron:false,wristband:'Gold',email:'jordan.sample@example.com'},
+    {id:'ml-02',name:'Alex Demo',checkedIn:false,rsvp:'Maybe',photo:face(2),list:'Guest',nda:'No',phone:'555-0102',patron:false,wristband:'',email:'alex.demo@example.com'},
+    {id:'ml-03',name:'Riley Practice',checkedIn:true,rsvp:'Confirmed',photo:face(3),list:'Table',nda:'Signed',phone:'555-0103',patron:true,wristband:'Gold',email:'riley.p@example.com'},
+    {id:'ml-04',name:'Casey Mock',checkedIn:false,rsvp:'',photo:face(4),list:'Working',nda:'No',phone:'555-0104',patron:false,wristband:'Black',email:''},
+    {id:'ml-05',name:'Taylor Drill',checkedIn:false,rsvp:'Waitlist',photo:face(5),list:'Guest',nda:'No',phone:'555-0105',patron:false,wristband:'',email:'t.drill@example.com'},
+    {id:'ml-06',name:'Morgan Faux',checkedIn:true,rsvp:'Confirmed',photo:face(6),list:'Patron',nda:'Signed',phone:'555-0106',patron:true,wristband:'Gold',email:'morgan.f@example.com'},
+    {id:'ml-07',name:'Jamie Rehearsal',checkedIn:false,rsvp:'',photo:face(7),list:'Guest',nda:'Signed',phone:'555-0107',patron:false,wristband:'',email:''},
+    {id:'ml-08',name:'Quinn Sandbox',checkedIn:false,rsvp:'Confirmed',photo:face(8),list:'Table',nda:'No',phone:'555-0108',patron:false,wristband:'',email:'quinn.s@example.com'},
+    {id:'ml-09',name:'Drew Example',checkedIn:true,rsvp:'Confirmed',photo:face(9),list:'Working',nda:'Signed',phone:'555-0109',patron:false,wristband:'Black',email:'drew.ex@example.com'},
+    {id:'ml-10',name:'Skyler Test',checkedIn:false,rsvp:'Maybe',photo:face(10),list:'Guest',nda:'No',phone:'555-0110',patron:false,wristband:'',email:''},
+    {id:'ml-11',name:'Reese Placeholder',checkedIn:true,rsvp:'Confirmed',photo:face(11),list:'Guest',nda:'Signed',phone:'555-0111',patron:false,wristband:'Gold',email:'reese.p@example.com'},
+    {id:'ml-12',name:'Blair Training',checkedIn:false,rsvp:'',photo:face(12),list:'Table',nda:'No',phone:'555-0112',patron:false,wristband:'',email:'blair.t@example.com'},
+    {id:'ml-13',name:'Cameron DryRun',checkedIn:false,rsvp:'Confirmed',photo:face(13),list:'Guest',nda:'Signed',phone:'555-0113',patron:false,wristband:'',email:''},
+    {id:'ml-14',name:'Parker Pretend',checkedIn:true,rsvp:'VIP',photo:face(14),list:'Patron',nda:'Signed',phone:'555-0114',patron:true,wristband:'Gold',email:'parker.p@example.com'},
+  ],
+  'mock-dnd':[
+    {id:'md-01',name:'Sage Sample',checkedIn:false,rsvp:'Confirmed',photo:face(15),list:'Guest',nda:'No',phone:'555-0201',patron:false,wristband:'',email:'sage.s@example.com'},
+    {id:'md-02',name:'River Demo',checkedIn:true,rsvp:'',photo:face(16),list:'Guest',nda:'Signed',phone:'555-0202',patron:false,wristband:'',email:''},
+    {id:'md-03',name:'Phoenix Mock',checkedIn:false,rsvp:'Maybe',photo:face(17),list:'Table',nda:'No',phone:'555-0203',patron:false,wristband:'',email:'phoenix.m@example.com'},
+    {id:'md-04',name:'Rowan Practice',checkedIn:true,rsvp:'Confirmed',photo:face(18),list:'Working',nda:'Signed',phone:'555-0204',patron:false,wristband:'Black',email:'rowan.p@example.com'},
+    {id:'md-05',name:'Emerson Drill',checkedIn:false,rsvp:'Waitlist',photo:face(19),list:'Guest',nda:'No',phone:'555-0205',patron:false,wristband:'',email:''},
+    {id:'md-06',name:'Harper Faux',checkedIn:false,rsvp:'Confirmed',photo:face(20),list:'Guest',nda:'Signed',phone:'555-0206',patron:false,wristband:'Gold',email:'harper.f@example.com'},
+    {id:'md-07',name:'Finley Rehearsal',checkedIn:true,rsvp:'',photo:face(21),list:'Patron',nda:'Signed',phone:'555-0207',patron:true,wristband:'Gold',email:'finley.r@example.com'},
+    {id:'md-08',name:'Hayden Sandbox',checkedIn:false,rsvp:'Confirmed',photo:face(22),list:'Guest',nda:'No',phone:'555-0208',patron:false,wristband:'',email:''},
+    {id:'md-09',name:'Lennox Example',checkedIn:false,rsvp:'Maybe',photo:face(23),list:'Table',nda:'Signed',phone:'555-0209',patron:false,wristband:'',email:'lennox.e@example.com'},
+    {id:'md-10',name:'Marlowe Test',checkedIn:true,rsvp:'Confirmed',photo:face(24),list:'Guest',nda:'Signed',phone:'555-0210',patron:false,wristband:'',email:'marlowe.t@example.com'},
+  ],
+  'mock-obscura':[
+    {id:'mo-01',name:'Indigo Sample',checkedIn:false,rsvp:'Premiere',photo:face(25),list:'Guest',nda:'Signed',phone:'555-0301',patron:false,wristband:'',email:'indigo@example.com'},
+    {id:'mo-02',name:'Vesper Demo',checkedIn:true,rsvp:'Premiere',photo:face(26),list:'Guest',nda:'Signed',phone:'555-0302',patron:false,wristband:'Gold',email:''},
+    {id:'mo-03',name:'Sable Mock',checkedIn:false,rsvp:'',photo:face(27),list:'Table',nda:'No',phone:'555-0303',patron:false,wristband:'',email:'sable.m@example.com'},
+    {id:'mo-04',name:'Raven Practice',checkedIn:true,rsvp:'Premiere',photo:face(28),list:'Working',nda:'Signed',phone:'555-0304',patron:false,wristband:'Black',email:'raven.p@example.com'},
+    {id:'mo-05',name:'Onyx Drill',checkedIn:false,rsvp:'Maybe',photo:face(29),list:'Guest',nda:'No',phone:'555-0305',patron:false,wristband:'',email:''},
+    {id:'mo-06',name:'Echo Faux',checkedIn:false,rsvp:'Premiere',photo:face(30),list:'Patron',nda:'Signed',phone:'555-0306',patron:true,wristband:'Gold',email:'echo.f@example.com'},
+    {id:'mo-07',name:'Nova Rehearsal',checkedIn:true,rsvp:'',photo:face(31),list:'Guest',nda:'Signed',phone:'555-0307',patron:false,wristband:'',email:'nova.r@example.com'},
+    {id:'mo-08',name:'Lux Sandbox',checkedIn:false,rsvp:'Premiere',photo:face(32),list:'Table',nda:'No',phone:'555-0308',patron:false,wristband:'',email:''},
+    {id:'mo-09',name:'Solstice Example',checkedIn:false,rsvp:'Confirmed',photo:face(33),list:'Guest',nda:'Signed',phone:'555-0309',patron:false,wristband:'',email:'solstice@example.com'},
+    {id:'mo-10',name:'Eclipse Test',checkedIn:false,rsvp:'Premiere',photo:face(34),list:'Guest',nda:'No',phone:'555-0310',patron:false,wristband:'',email:''},
+    {id:'mo-11',name:'Astra Placeholder',checkedIn:true,rsvp:'VIP',photo:face(35),list:'Patron',nda:'Signed',phone:'555-0311',patron:true,wristband:'Gold',email:'astra.p@example.com'},
+  ],
+};
 
-    const TABS=[
-      {id:'all',lbl:'Full List'},
-      {id:'guest',lbl:'Guests'},
-      {id:'patron',lbl:'Patrons'},
-      {id:'table',lbl:'Table'},
-      {id:'working',lbl:'Working'},
-    ];
+const TABS=[
+  {id:'guest',lbl:'Guests'},
+  {id:'tables',lbl:'Tables'},
+  {id:'working',lbl:'Working'},
+  {id:'all',lbl:'Full List'},
+];
 
-    let guests=[],curTab='all',curTable='',curG=null,local={};
-    let originalWristband='';
+let guests=[],curTab='guest',curTable='',curG=null,local={};
+let originalWristband='';
 
-    function ensurePracticeAuth(){
-      const ok=(localStorage.getItem(LS_KEY)||'')===PRACTICE_PASS;
-      if(ok) return;
-      const entered=(prompt('Mock app password:')||'').trim();
-      if(entered!==PRACTICE_PASS){
-        alert('Wrong password — use: practice');
-        throw new Error('Auth failed');
-      }
-      localStorage.setItem(LS_KEY,PRACTICE_PASS);
-    }
+function ensurePracticeAuth(){
+  const ok=(localStorage.getItem(LS_KEY)||'')===PRACTICE_PASS;
+  if(ok) return;
+  const entered=(prompt('Mock app password:')||'').trim();
+  if(entered!==PRACTICE_PASS){
+    alert('Wrong password — use: practice');
+    throw new Error('Auth failed');
+  }
+  localStorage.setItem(LS_KEY,PRACTICE_PASS);
+}
 
-    function resetKey(){
-      localStorage.removeItem(LS_KEY);
-      location.reload();
-    }
+function resetKey(){
+  localStorage.removeItem(LS_KEY);
+  location.reload();
+}
 
-    function showToast(msg='Saved ✓'){
-      const t=document.getElementById('toast');
-      t.textContent=msg; t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'),1800);
-    }
-    function esc(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    function ini(n){ return n.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase(); }
+function showToast(msg='Saved ✓'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+function esc(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function ini(n){ return n.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase(); }
 
-    function buildEvList(){
-      document.getElementById('evList').innerHTML=EVENTS.map((e,i)=>
-        `<div class="ev-item" onclick="pickEv(${i})"><div class="ev-name">${esc(e.name)}</div><div class="ev-date">${esc(e.date)}</div></div>`
-      ).join('');
-    }
+function buildEvList(){
+  document.getElementById('evList').innerHTML=EVENTS.map((e,i)=>
+    `<div class="ev-item" onclick="pickEv(${i})"><div class="ev-name">${esc(e.name)}</div><div class="ev-date">${esc(e.date)}</div></div>`
+  ).join('');
+}
 
-    function cloneMockGuests(key){
-      const raw=MOCK_GUESTS[key]||[];
-      return raw.map(g=>({...g}));
-    }
+function cloneMockGuests(key){
+  const raw=MOCK_GUESTS[key]||[];
+  return raw.map(g=>({...g}));
+}
 
-    function pickEv(i){
-      const e=EVENTS[i]; curTable=e.table;
-      document.getElementById('eventTitle').textContent=e.name+' | '+e.date;
-      document.getElementById('evScreen').style.display='none';
-      document.getElementById('app').style.display='block';
-      load();
-    }
+function pickEv(i){
+  const e=EVENTS[i]; curTable=e.table;
+  document.getElementById('eventTitle').textContent=e.name+' | '+e.date;
+  document.getElementById('evScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  load();
+}
 
-    function showEvScreen(){
-      document.getElementById('evScreen').style.display='flex';
-      document.getElementById('app').style.display='none';
-      document.getElementById('detailView').style.display='none';
-    }
+function showEvScreen(){
+  document.getElementById('evScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('detailView').style.display='none';
+}
 
-    function sortGuestsByName(list){
-      return [...list].sort((a,b)=>{
-        const an=(a?.name||'').trim();
-        const bn=(b?.name||'').trim();
-        return an.localeCompare(bn,undefined,{sensitivity:'base'});
+function sortGuestsByName(list){
+  return [...list].sort((a,b)=>{
+    const an=(a?.name||'').trim();
+    const bn=(b?.name||'').trim();
+    return an.localeCompare(bn,undefined,{sensitivity:'base'});
+  });
+}
+
+async function load(){
+  document.getElementById('main').innerHTML='<div class="cstate"><div class="spinner"></div><div class="cstate-txt">Opening the doors…</div></div>';
+  buildTabs();
+  try{
+    ensurePracticeAuth();
+    await new Promise(r=>setTimeout(r,350));
+    guests=sortGuestsByName(cloneMockGuests(curTable));
+    render();
+  }catch(e){
+    document.getElementById('main').innerHTML=`<div class="cstate"><div class="cstate-txt" style="color:var(--red)">${esc(e.message||'Could not load')}</div><br><button onclick="resetKey()" style="margin-top:10px;padding:8px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;">Reset password</button></div>`;
+  }
+}
+
+function buildTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(t=>
+    `<button class="tab ${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.lbl}</button>`
+  ).join('');
+}
+function setTab(id){curTab=id;buildTabs();render();}
+
+function render(){
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  let list=guests;
+  if(curTab==='tables') list=list.filter(g=>g.patron||(g.list||'').toLowerCase()==='table');
+  else if(curTab==='guest') list=list.filter(g=>(g.list||'').toLowerCase()==='guest');
+  else if(curTab==='working') list=list.filter(g=>(g.list||'').toLowerCase()==='working');
+  if(q) list=list.filter(g=>g.name.toLowerCase().includes(q)||(g.phone||'').includes(q));
+  list=sortGuestsByName(list);
+  const chk=list.filter(g=>g.checkedIn).length;
+  document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>`;
+  if(!list.length){
+    document.getElementById('main').innerHTML='<div class="cstate"><div class="cstate-txt">No guests found</div></div>';
+    return;
+  }
+  document.getElementById('main').innerHTML=`<div class="grid">${list.map(gCard).join('')}</div>`;
+}
+
+function gCard(g){
+  const ph=g.photo
+    ?`<img class="card-photo" src="${esc(g.photo)}" loading="lazy" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-init" style="display:none">${ini(g.name)}</div>`
+    :`<div class="card-init">${ini(g.name)}</div>`;
+  const dot=g.wristband==='Gold'?`<span class="wb-dot wb-gold"></span>`:g.wristband==='Black'?`<span class="wb-dot wb-black"></span>`:'';
+  return `<div class="card" onclick="openDetail('${g.id}')">
+    ${ph}
+    <div class="card-body">
+      <div class="card-name">${g.checkedIn?'<span class="card-tick">✓</span>':''}${esc(g.name)}</div>
+      <div class="card-tag">${dot}${esc(g.list||'')}</div>
+    </div>
+  </div>`;
+}
+
+function openDetail(id){
+  const g=guests.find(x=>x.id===id); if(!g) return;
+  curG=g;
+  originalWristband=g.wristband||'';
+  const loc=local[id]||{};
+  const ph=g.photo?`<img class="detail-avatar" src="${esc(g.photo)}" alt="">`:`<div class="detail-init">${ini(g.name)}</div>`;
+  const wbPill=g.wristband==='Gold'
+    ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
+    :g.wristband==='Black'
+      ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
+      :`<div class="wb-pill none">No wristbands assigned</div>`;
+  const ndaRow=g.nda!=='Signed'
+    ?`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="https://forms.gle/asRXJtR6zHhDoGZJ8" target="_blank">🔗</a></div>`
+    :'';
+
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-head">
+      <div class="detail-nav"><button type="button" class="back-btn" onclick="closeDetail()" aria-label="Back to guest list">BACK</button></div>
+      <div class="detail-avatar-wrap">${ph}</div>
+      <div class="detail-name">${esc(g.name)}</div>
+      <div class="detail-sub">${esc(g.list||'')}${g.rsvp?' · RSVP: '+esc(g.rsvp):''}</div>
+      <div class="detail-chips">
+        ${g.phone?`<a class="det-chip" href="tel:${esc(g.phone)}">📞 ${esc(g.phone)}</a>`:''}
+        ${g.email?`<a class="det-chip" href="mailto:${esc(g.email)}">✉️ ${esc(g.email)}</a>`:''}
+      </div>
+    </div>
+    <div class="det-cards">
+      <div class="det-card">
+        <div class="det-row">
+          <div class="det-lbl">✓ Checked In:</div>
+          <label class="toggle"><input type="checkbox" id="dCI" ${g.checkedIn?'checked':''} onchange="autoSave()"><span class="slider"></span></label>
+        </div>
+        <div class="wb-display">
+          <div class="wb-display-lbl">Wristbands</div>
+          <div class="wb-display-note">${WB_NOTE}</div>
+          <div id="wbPillDisplay">${wbPill}</div>
+        </div>
+        <div class="det-row">
+          <div class="det-row-left">
+            <div class="det-lbl">👑 Patron</div>
+            <div class="det-sublbl">Patrons receive GOLD WRISTBANDS</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="dPat" ${g.patron?'checked':''} onchange="onPatron(this)"><span class="slider"></span></label>
+        </div>
+        <div class="det-row">
+          <div class="det-lbl">🤫 NDA Signed:</div>
+          <label class="toggle"><input type="checkbox" id="dNDA" ${g.nda==='Signed'?'checked':''} onchange="onNDA(this)"><span class="slider"></span></label>
+        </div>
+        <div id="ndaBox">${ndaRow}</div>
+      </div>
+      <div class="det-card">
+        <div class="det-input-wrap">
+          <div class="det-input-lbl">🧥 Coat Check #</div>
+          <input class="det-input" id="dCoat" value="${esc(loc.coat||'')}" placeholder="e.g. 69" onblur="saveLocal()">
+        </div>
+        <div class="det-input-wrap">
+          <div class="det-input-lbl">📱 Phone Check #</div>
+          <input class="det-input" id="dPhone" value="${esc(loc.phone||'')}" placeholder="e.g. 69" onblur="saveLocal()">
+        </div>
+      </div>
+      <div class="det-card">
+        <div class="det-input-wrap">
+          <div class="det-input-lbl">📝 Door Notes:</div>
+          <textarea class="det-input" id="dNotes" placeholder="Enter any additional notes" onblur="saveLocal()">${esc(loc.notes||'')}</textarea>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('app').style.display='none';
+  document.getElementById('detailView').style.display='block';
+  document.getElementById('detailView').scrollTop=0;
+}
+
+function updateWBPill(wb){
+  const p=wb==='Gold'
+    ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
+    :wb==='Black'
+      ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
+      :`<div class="wb-pill none">No wristbands assigned</div>`;
+  document.getElementById('wbPillDisplay').innerHTML=p;
+}
+
+function onPatron(cb){
+  if(cb.checked){
+    updateWBPill('Gold');
+  }else{
+    updateWBPill(originalWristband==='Black'?'Black':'');
+  }
+  autoSave();
+}
+
+function onNDA(cb){
+  document.getElementById('ndaBox').innerHTML=cb.checked?'':`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="https://forms.gle/asRXJtR6zHhDoGZJ8" target="_blank">🔗</a></div>`;
+  autoSave();
+}
+
+function onAddNDAChange(cb){
+  const hint=document.getElementById('mNdaHint');
+  if(!hint)return;
+  hint.style.display=cb.checked?'none':'flex';
+}
+
+function saveLocal(){
+  if(!curG)return;
+  local[curG.id]={
+    coat:document.getElementById('dCoat').value.trim(),
+    phone:document.getElementById('dPhone').value.trim(),
+    notes:document.getElementById('dNotes').value.trim()
+  };
+  showToast('Saved (practice) ✓');
+}
+
+let saveTimer=null;
+function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    if(!curG)return;
+    const cI=document.getElementById('dCI').checked;
+    const cN=document.getElementById('dNDA').checked;
+    const cP=document.getElementById('dPat').checked;
+    const wb=cP?'Gold':(originalWristband==='Black'?'Black':'');
+    const i=guests.findIndex(g=>g.id===curG.id);
+    if(i>-1){
+      Object.assign(guests[i],{
+        checkedIn:cI,
+        nda:cN?'Signed':'No',
+        patron:cP,
+        wristband:wb
       });
     }
+    showToast('Saved (practice) ✓');
+  },400);
+}
 
-    async function load(){
-      document.getElementById('main').innerHTML='<div class="cstate"><div class="spinner"></div><div class="cstate-txt">Opening the doors…</div></div>';
-      buildTabs();
-      try{
-        ensurePracticeAuth();
-        await new Promise(r=>setTimeout(r,350));
-        guests=sortGuestsByName(cloneMockGuests(curTable));
-        render();
-      }catch(e){
-        document.getElementById('main').innerHTML=`<div class="cstate"><div class="cstate-txt" style="color:var(--red)">${esc(e.message||'Could not load')}</div><br><button onclick="resetKey()" style="margin-top:10px;padding:8px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;">Reset password</button></div>`;
-      }
-    }
+function closeDetail(){
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('app').style.display='block';
+  curG=null;
+  render();
+}
 
-    function buildTabs(){
-      document.getElementById('tabs').innerHTML=TABS.map(t=>
-        `<button class="tab ${t.id===curTab?'active':''}" onclick="setTab('${t.id}')">${t.lbl}</button>`
-      ).join('');
-    }
-    function setTab(id){curTab=id;buildTabs();render();}
+function openAdd(){
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('aN').focus();
+  const nda=document.getElementById('mNDA');
+  if(nda) onAddNDAChange(nda);
+}
 
-    function render(){
-      const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
-      let list=guests;
-      if(curTab==='patron') list=list.filter(g=>g.patron);
-      else if(curTab==='guest') list=list.filter(g=>(g.list||'').toLowerCase()==='guest');
-      else if(curTab==='working') list=list.filter(g=>(g.list||'').toLowerCase()==='working');
-      else if(curTab==='table') list=list.filter(g=>(g.list||'').toLowerCase()==='table');
-      if(q) list=list.filter(g=>g.name.toLowerCase().includes(q)||(g.phone||'').includes(q));
-      list=sortGuestsByName(list);
-      const chk=list.filter(g=>g.checkedIn).length;
-      document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>`;
-      if(!list.length){
-        document.getElementById('main').innerHTML='<div class="cstate"><div class="cstate-txt">No guests found</div></div>';
-        return;
-      }
-      document.getElementById('main').innerHTML=`<div class="grid">${list.map(gCard).join('')}</div>`;
-    }
+function closeAdd(){
+  document.getElementById('addModal').classList.remove('open');
+  ['aN','mCoat','mPhone','mNotes'].forEach(id=>document.getElementById(id).value='');
+  ['mCI','mNDA'].forEach(id=>document.getElementById(id).checked=false);
+  onAddNDAChange({checked:false});
+}
 
-    function gCard(g){
-      const ph=g.photo
-        ?`<img class="card-photo" src="${esc(g.photo)}" loading="lazy" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-init" style="display:none">${ini(g.name)}</div>`
-        :`<div class="card-init">${ini(g.name)}</div>`;
-      const dot=g.wristband==='Gold'?`<span class="wb-dot wb-gold"></span>`:g.wristband==='Black'?`<span class="wb-dot wb-black"></span>`:'';
-      return `<div class="card" onclick="openDetail('${g.id}')">
-        ${ph}
-        <div class="card-body">
-          <div class="card-name">${g.checkedIn?'<span class="card-tick">✓</span>':''}${esc(g.name)}</div>
-          <div class="card-tag">${dot}${esc(g.list||'')}</div>
-        </div>
-      </div>`;
-    }
+function doAdd(){
+  const name=document.getElementById('aN').value.trim();
+  if(!name){alert('Guest name required');return;}
+  const btn=document.getElementById('addBtn');
+  btn.textContent='Adding…';
 
-    function openDetail(id){
-      const g=guests.find(x=>x.id===id); if(!g) return;
-      curG=g;
-      originalWristband=g.wristband||'';
-      const loc=local[id]||{};
-      const ph=g.photo?`<img class="detail-avatar" src="${esc(g.photo)}" alt="">`:`<div class="detail-init">${ini(g.name)}</div>`;
-      const wbPill=g.wristband==='Gold'
-        ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
-        :g.wristband==='Black'
-          ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
-          :`<div class="wb-pill none">No wristbands assigned</div>`;
-      const ndaRow=g.nda!=='Signed'
-        ?`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="https://forms.gle/asRXJtR6zHhDoGZJ8" target="_blank">🔗</a></div>`
-        :'';
+  const id='mock-'+Date.now();
+  const g={
+    id,
+    name,
+    checkedIn:!!document.getElementById('mCI').checked,
+    rsvp:'',
+    photo:face((Date.now()%70)+1),
+    list:'Guest',
+    nda:document.getElementById('mNDA').checked?'Signed':'No',
+    phone:'555-0199',
+    patron:false,
+    wristband:'',
+    email:''
+  };
+  const coat=document.getElementById('mCoat').value.trim();
+  const ph=document.getElementById('mPhone').value.trim();
+  const notes=document.getElementById('mNotes').value.trim();
+  local[id]={coat,phone:ph,notes};
+  guests.push(g);
+  guests=sortGuestsByName(guests);
+  closeAdd();
+  render();
+  showToast('Added (practice only) ✓');
+  btn.textContent='Add Guest';
+}
 
-      document.getElementById('detailContent').innerHTML=`
-        <div class="detail-head">
-          <div class="detail-nav"><button type="button" class="back-btn" onclick="closeDetail()" aria-label="Back to guest list">BACK</button></div>
-          <div class="detail-avatar-wrap">${ph}</div>
-          <div class="detail-name">${esc(g.name)}</div>
-          <div class="detail-sub">${esc(g.list||'')}${g.rsvp?' · RSVP: '+esc(g.rsvp):''}</div>
-          <div class="detail-chips">
-            ${g.phone?`<a class="det-chip" href="tel:${esc(g.phone)}">📞 ${esc(g.phone)}</a>`:''}
-            ${g.email?`<a class="det-chip" href="mailto:${esc(g.email)}">✉️ ${esc(g.email)}</a>`:''}
-          </div>
-        </div>
-        <div class="det-cards">
-          <div class="det-card">
-            <div class="det-row">
-              <div class="det-lbl">✓ Checked In:</div>
-              <label class="toggle"><input type="checkbox" id="dCI" ${g.checkedIn?'checked':''} onchange="autoSave()"><span class="slider"></span></label>
-            </div>
-            <div class="wb-display">
-              <div class="wb-display-lbl">Wristbands</div>
-              <div class="wb-display-note">${WB_NOTE}</div>
-              <div id="wbPillDisplay">${wbPill}</div>
-            </div>
-            <div class="det-row">
-              <div class="det-row-left">
-                <div class="det-lbl">👑 Patron</div>
-                <div class="det-sublbl">Patrons receive GOLD WRISTBANDS</div>
-              </div>
-              <label class="toggle"><input type="checkbox" id="dPat" ${g.patron?'checked':''} onchange="onPatron(this)"><span class="slider"></span></label>
-            </div>
-            <div class="det-row">
-              <div class="det-lbl">🤫 NDA Signed:</div>
-              <label class="toggle"><input type="checkbox" id="dNDA" ${g.nda==='Signed'?'checked':''} onchange="onNDA(this)"><span class="slider"></span></label>
-            </div>
-            <div id="ndaBox">${ndaRow}</div>
-          </div>
-          <div class="det-card">
-            <div class="det-input-wrap">
-              <div class="det-input-lbl">🧥 Coat Check #</div>
-              <input class="det-input" id="dCoat" value="${esc(loc.coat||'')}" placeholder="e.g. 69" onblur="saveLocal()">
-            </div>
-            <div class="det-input-wrap">
-              <div class="det-input-lbl">📱 Phone Check #</div>
-              <input class="det-input" id="dPhone" value="${esc(loc.phone||'')}" placeholder="e.g. 69" onblur="saveLocal()">
-            </div>
-          </div>
-          <div class="det-card">
-            <div class="det-input-wrap">
-              <div class="det-input-lbl">📝 Door Notes:</div>
-              <textarea class="det-input" id="dNotes" placeholder="Enter any additional notes" onblur="saveLocal()">${esc(loc.notes||'')}</textarea>
-            </div>
-          </div>
-        </div>`;
-      document.getElementById('app').style.display='none';
-      document.getElementById('detailView').style.display='block';
-      document.getElementById('detailView').scrollTop=0;
-    }
-
-    function updateWBPill(wb){
-      const p=wb==='Gold'
-        ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
-        :wb==='Black'
-          ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
-          :`<div class="wb-pill none">No wristbands assigned</div>`;
-      document.getElementById('wbPillDisplay').innerHTML=p;
-    }
-
-    function onPatron(cb){
-      if(cb.checked){
-        updateWBPill('Gold');
-      }else{
-        updateWBPill(originalWristband==='Black'?'Black':'');
-      }
-      autoSave();
-    }
-
-    function onNDA(cb){
-      document.getElementById('ndaBox').innerHTML=cb.checked?'':`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="https://forms.gle/asRXJtR6zHhDoGZJ8" target="_blank">🔗</a></div>`;
-      autoSave();
-    }
-
-    function onAddNDAChange(cb){
-      const hint=document.getElementById('mNdaHint');
-      if(!hint)return;
-      hint.style.display=cb.checked?'none':'flex';
-    }
-
-    function saveLocal(){
-      if(!curG)return;
-      local[curG.id]={
-        coat:document.getElementById('dCoat').value.trim(),
-        phone:document.getElementById('dPhone').value.trim(),
-        notes:document.getElementById('dNotes').value.trim()
-      };
-      showToast('Saved (practice) ✓');
-    }
-
-    let saveTimer=null;
-    function autoSave(){
-      clearTimeout(saveTimer);
-      saveTimer=setTimeout(()=>{
-        if(!curG)return;
-        const cI=document.getElementById('dCI').checked;
-        const cN=document.getElementById('dNDA').checked;
-        const cP=document.getElementById('dPat').checked;
-        const wb=cP?'Gold':(originalWristband==='Black'?'Black':'');
-        const i=guests.findIndex(g=>g.id===curG.id);
-        if(i>-1){
-          Object.assign(guests[i],{
-            checkedIn:cI,
-            nda:cN?'Signed':'No',
-            patron:cP,
-            wristband:wb
-          });
-        }
-        showToast('Saved (practice) ✓');
-      },400);
-    }
-
-    function closeDetail(){
-      document.getElementById('detailView').style.display='none';
-      document.getElementById('app').style.display='block';
-      curG=null;
-      render();
-    }
-
-    function openAdd(){
-      document.getElementById('addModal').classList.add('open');
-      document.getElementById('aN').focus();
-      const nda=document.getElementById('mNDA');
-      if(nda) onAddNDAChange(nda);
-    }
-
-    function closeAdd(){
-      document.getElementById('addModal').classList.remove('open');
-      ['aN','mCoat','mPhone','mNotes'].forEach(id=>document.getElementById(id).value='');
-      ['mCI','mNDA'].forEach(id=>document.getElementById(id).checked=false);
-      onAddNDAChange({checked:false});
-    }
-
-    function doAdd(){
-      const name=document.getElementById('aN').value.trim();
-      if(!name){alert('Guest name required');return;}
-      const btn=document.getElementById('addBtn');
-      btn.textContent='Adding…';
-
-      const id='mock-'+Date.now();
-      const g={
-        id,
-        name,
-        checkedIn:!!document.getElementById('mCI').checked,
-        rsvp:'',
-        photo:mockAvatar('new-'+id),
-        list:'Guest',
-        nda:document.getElementById('mNDA').checked?'Signed':'No',
-        phone:'555-0199',
-        patron:false,
-        wristband:'',
-        email:''
-      };
-      const coat=document.getElementById('mCoat').value.trim();
-      const ph=document.getElementById('mPhone').value.trim();
-      const notes=document.getElementById('mNotes').value.trim();
-      local[id]={coat,phone:ph,notes};
-      guests.push(g);
-      guests=sortGuestsByName(guests);
-      closeAdd();
-      render();
-      showToast('Added (practice only) ✓');
-      btn.textContent='Add Guest';
-    }
-
-    document.querySelector('.modal-wb-note').textContent=WB_NOTE;
-    buildEvList();
+document.querySelector('.modal-wb-note').textContent=WB_NOTE;
+buildEvList();
   </script>
 </body>
 </html>
