@@ -90,13 +90,13 @@
     .det-lbl{font-size:14px;color:var(--dark);display:flex;align-items:center;gap:6px;}
     .wb-display{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.05);}
     .wb-display-lbl{font-size:14px;color:var(--dark);margin-bottom:2px;}
-    .det-sublbl,.wb-display-note,.modal-wb-note{font-size:11px;color:var(--warm);line-height:1.35;}
+    .det-sublbl,.modal-wb-note{font-size:11px;color:var(--warm);line-height:1.35;}
     .det-sublbl{margin-top:2px;}
-    .wb-display-note{margin-bottom:8px;}
     .wb-pill{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:10px 16px;font-size:14px;border:1.5px solid rgba(0,0,0,.08);}
     .wb-pill.none{color:var(--warm);font-style:italic;}
     .wb-pill.gold{background:#fffdf0;border-color:#c9a96e;color:#8a6820;}
     .wb-pill.black{background:#1a1a1a;border-color:#1a1a1a;color:#fff;}
+    #wbPillDisplay{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
     .wb-circle{width:12px;height:12px;border-radius:50%;}
     .wb-circle.gold{background:#c9a96e;}
     .wb-circle.black{background:#fff;}
@@ -247,7 +247,7 @@
   </div>
 
   <script>
-const WB_NOTE='🖤 Verified STI Results receive BLACK WRISTBANDS';
+const WB_NOTE='💛 Patrons receive gold wristbands · 🖤 Verified STI → black wristbands';
 const PRACTICE_PASS='practice';
 const LS_KEY='ll_door_practice_pass';
 
@@ -283,7 +283,7 @@ const MOCK_GUESTS={
     {id:'md-04',name:'Rowan Practice',checkedIn:true,rsvp:'Confirmed',photo:face(18),list:'Working',nda:'Signed',phone:'555-0204',patron:false,wristband:'Black',email:'rowan.p@example.com'},
     {id:'md-05',name:'Emerson Drill',checkedIn:false,rsvp:'Waitlist',photo:face(19),list:'Guest',nda:'No',phone:'555-0205',patron:false,wristband:'',email:''},
     {id:'md-06',name:'Harper Faux',checkedIn:false,rsvp:'Confirmed',photo:face(20),list:'Guest',nda:'Signed',phone:'555-0206',patron:false,wristband:'Gold',email:'harper.f@example.com'},
-    {id:'md-07',name:'Finley Rehearsal',checkedIn:true,rsvp:'',photo:face(21),list:'Patron',nda:'Signed',phone:'555-0207',patron:true,wristband:'Gold',email:'finley.r@example.com'},
+    {id:'md-07',name:'Finley Rehearsal',checkedIn:true,rsvp:'',photo:face(21),list:'Patron',nda:'Signed',phone:'555-0207',patron:true,stiVerified:true,wristband:'Gold',email:'finley.r@example.com'},
     {id:'md-08',name:'Hayden Sandbox',checkedIn:false,rsvp:'Confirmed',photo:face(22),list:'Guest',nda:'No',phone:'555-0208',patron:false,wristband:'',email:''},
     {id:'md-09',name:'Lennox Example',checkedIn:false,rsvp:'Maybe',photo:face(23),list:'Table',nda:'Signed',phone:'555-0209',patron:false,wristband:'',email:'lennox.e@example.com'},
     {id:'md-10',name:'Marlowe Test',checkedIn:true,rsvp:'Confirmed',photo:face(24),list:'Guest',nda:'Signed',phone:'555-0210',patron:false,wristband:'',email:'marlowe.t@example.com'},
@@ -311,7 +311,6 @@ const TABS=[
 ];
 
 let guests=[],curTab='guest',curTable='',curG=null,local={};
-let originalWristband='';
 
 function ensurePracticeAuth(){
   const ok=(localStorage.getItem(LS_KEY)||'')===PRACTICE_PASS;
@@ -336,6 +335,13 @@ function showToast(msg='Saved ✓'){
 }
 function esc(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function ini(n){ return n.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase(); }
+function buildWBDisplayHTML(patron,stiVerified){
+  let html='';
+  if(stiVerified) html+='<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>';
+  if(patron) html+='<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>';
+  if(!patron && !stiVerified) html+='<div class="wb-pill none">No wristbands assigned</div>';
+  return html;
+}
 
 function buildEvList(){
   document.getElementById('evList').innerHTML=EVENTS.map((e,i)=>
@@ -345,7 +351,13 @@ function buildEvList(){
 
 function cloneMockGuests(key){
   const raw=MOCK_GUESTS[key]||[];
-  return raw.map(g=>({...g}));
+  return raw.map(g=>{
+    const patron=!!g.patron;
+    const stiVerified=typeof g.stiVerified==='boolean'
+      ? g.stiVerified
+      : (!patron && g.wristband==='Black');
+    return {...g, patron, stiVerified};
+  });
 }
 
 function pickEv(i){
@@ -411,7 +423,7 @@ function gCard(g){
   const ph=g.photo
     ?`<img class="card-photo" src="${esc(g.photo)}" loading="lazy" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-init" style="display:none">${ini(g.name)}</div>`
     :`<div class="card-init">${ini(g.name)}</div>`;
-  const dot=g.wristband==='Gold'?`<span class="wb-dot wb-gold"></span>`:g.wristband==='Black'?`<span class="wb-dot wb-black"></span>`:'';
+  const dot=(g.patron?`<span class="wb-dot wb-gold"></span>`:'')+(g.stiVerified?`<span class="wb-dot wb-black"></span>`:'');
   return `<div class="card" onclick="openDetail('${g.id}')">
     ${ph}
     <div class="card-body">
@@ -424,14 +436,9 @@ function gCard(g){
 function openDetail(id){
   const g=guests.find(x=>x.id===id); if(!g) return;
   curG=g;
-  originalWristband=g.wristband||'';
   const loc=local[id]||{};
   const ph=g.photo?`<img class="detail-avatar" src="${esc(g.photo)}" alt="">`:`<div class="detail-init">${ini(g.name)}</div>`;
-  const wbPill=g.wristband==='Gold'
-    ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
-    :g.wristband==='Black'
-      ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
-      :`<div class="wb-pill none">No wristbands assigned</div>`;
+  const wbPill=buildWBDisplayHTML(!!g.patron,!!g.stiVerified);
   const ndaRow=g.nda!=='Signed'
     ?`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="https://forms.gle/asRXJtR6zHhDoGZJ8" target="_blank">🔗</a></div>`
     :'';
@@ -455,15 +462,21 @@ function openDetail(id){
         </div>
         <div class="wb-display">
           <div class="wb-display-lbl">Wristbands</div>
-          <div class="wb-display-note">${WB_NOTE}</div>
           <div id="wbPillDisplay">${wbPill}</div>
         </div>
         <div class="det-row">
           <div class="det-row-left">
             <div class="det-lbl">👑 Patron</div>
-            <div class="det-sublbl">Patrons receive GOLD WRISTBANDS</div>
+            <div class="det-sublbl">💛 Patrons receive GOLD WRISTBANDS</div>
           </div>
           <label class="toggle"><input type="checkbox" id="dPat" ${g.patron?'checked':''} onchange="onPatron(this)"><span class="slider"></span></label>
+        </div>
+        <div class="det-row">
+          <div class="det-row-left">
+            <div class="det-lbl">💉 STI Tests Verified</div>
+            <div class="det-sublbl">🖤 Verified guests receive BLACK WRISTBANDS</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="dSTI" ${g.stiVerified?'checked':''} onchange="onSTI(this)"><span class="slider"></span></label>
         </div>
         <div class="det-row">
           <div class="det-lbl">🤫 NDA Signed:</div>
@@ -493,21 +506,20 @@ function openDetail(id){
   document.getElementById('detailView').scrollTop=0;
 }
 
-function updateWBPill(wb){
-  const p=wb==='Gold'
-    ?`<div class="wb-pill gold"><span class="wb-circle gold"></span>Gold</div>`
-    :wb==='Black'
-      ?`<div class="wb-pill black"><span class="wb-circle black"></span>Black</div>`
-      :`<div class="wb-pill none">No wristbands assigned</div>`;
-  document.getElementById('wbPillDisplay').innerHTML=p;
+function updateWBDisplay(){
+  const cP=document.getElementById('dPat').checked;
+  const sti=document.getElementById('dSTI');
+  const cS=sti && sti.checked;
+  document.getElementById('wbPillDisplay').innerHTML=buildWBDisplayHTML(cP,cS);
+}
+
+function onSTI(cb){
+  updateWBDisplay();
+  autoSave();
 }
 
 function onPatron(cb){
-  if(cb.checked){
-    updateWBPill('Gold');
-  }else{
-    updateWBPill(originalWristband==='Black'?'Black':'');
-  }
+  updateWBDisplay();
   autoSave();
 }
 
@@ -540,14 +552,20 @@ function autoSave(){
     const cI=document.getElementById('dCI').checked;
     const cN=document.getElementById('dNDA').checked;
     const cP=document.getElementById('dPat').checked;
-    const wb=cP?'Gold':(originalWristband==='Black'?'Black':'');
+    const stiEl=document.getElementById('dSTI');
+    const cS=stiEl && stiEl.checked;
+    const wb=[];
+    if(cP) wb.push('Gold');
+    if(cS) wb.push('Black');
     const i=guests.findIndex(g=>g.id===curG.id);
     if(i>-1){
       Object.assign(guests[i],{
         checkedIn:cI,
         nda:cN?'Signed':'No',
         patron:cP,
-        wristband:wb
+        stiVerified:cS,
+        wristband:wb.includes('Gold')?'Gold':(wb.includes('Black')?'Black':''),
+        sti:cS
       });
     }
     showToast('Saved (practice) ✓');
