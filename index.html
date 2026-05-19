@@ -754,7 +754,7 @@
         guests[i]={...guests[i],coatCheck:vCoat,phoneCheckNum:vPhone,doorNotes:vNotes};
         if(curG.id===guests[i].id) curG=guests[i];
       }
-      showToast('Saved (practice) ✓');
+      showToast('Saved ✓');
     }
     let saveTimer=null;
     function autoSave(){
@@ -792,7 +792,7 @@
           };
           curG=guests[i];
         }
-        showToast('Saved (practice) ✓');
+        showToast('Saved ✓');
         try{ render(); }catch(_){}
       },400);
     }
@@ -873,7 +873,7 @@
       guests=sortGuestsByName(guests);
       closeAdd();
       render();
-      showToast('Added (practice) ✓');
+      showToast('Saved ✓');
       btn.textContent='Add Guest';
     }
     if(EVENTS.length===1) pickEv(0);
