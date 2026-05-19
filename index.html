@@ -498,6 +498,16 @@
       if(!g) return false;
       return listFieldMatches(g,'table')||listFieldMatches(g,'tables');
     }
+    function setGuestListWithTable(g, isTable){
+      let segs=listSegmentsLower(g);
+      segs=segs.filter(seg=>{
+        const k=normListKey(seg);
+        return k!=='table' && k!=='tables';
+      });
+      if(isTable) segs.push('Table');
+      else if(!segs.length) segs.push('Guest');
+      return segs.join(', ');
+    }
     function normalizeMockGuest(g){
       const wristbands=[];
       if(g.wristband==='Gold') wristbands.push('Gold');
@@ -662,7 +672,7 @@
                 <div class="det-lbl">Tables</div>
                 <div class="det-sublbl">💛 Table guests receive GOLD WRISTBANDS</div>
               </div>
-              <label class="toggle" title="Practice: set List to Table in mock data"><input type="checkbox" id="dTbl" ${g.tableGuest?'checked':''} disabled aria-readonly="true"><span class="slider"></span></label>
+              <label class="toggle"><input type="checkbox" id="dTbl" ${g.tableGuest?'checked':''} onchange="onTable(this)"><span class="slider"></span></label>
             </div>
             <div class="det-row">
               <div class="det-row-left">
@@ -702,14 +712,14 @@
     }
     function updateWBDisplay(){
       const box=document.getElementById('wbPillDisplay');
+      const dTbl=document.getElementById('dTbl');
       const sti=document.getElementById('dSTI');
       if(!box||!curG)return;
-      const hasGoldFromBands=!!(Array.isArray(curG.wristbands)&&curG.wristbands.includes('Gold'));
-      const tableGuest=guestIsTableGuest(curG);
-      const hasGold=tableGuest||hasGoldFromBands;
+      const cTbl=dTbl?dTbl.checked:guestIsTableGuest(curG);
       const cS=sti && sti.checked;
-      box.innerHTML=buildWBDisplayHTML(hasGold,cS);
+      box.innerHTML=buildWBDisplayHTML(cTbl,cS);
     }
+    function onTable(cb){ updateWBDisplay(); autoSave(); }
     function onSTI(cb){ updateWBDisplay(); autoSave(); }
     function onNDA(cb){
       document.getElementById('ndaBox').innerHTML=cb.checked?'':`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="${NDA_FORM_URL}" target="_blank" rel="noopener noreferrer">🔗</a></div>`;
@@ -746,15 +756,17 @@
         if(myGen!==saveGen) return;
         const dCI=document.getElementById('dCI');
         const dNDA=document.getElementById('dNDA');
+        const dTbl=document.getElementById('dTbl');
         const stiEl=document.getElementById('dSTI');
         if(!dCI||!dNDA)return;
         const cI=dCI.checked;
         const cN=dNDA.checked;
+        const cTbl=dTbl?dTbl.checked:guestIsTableGuest(curG);
         const cS=stiEl && stiEl.checked;
         const wb=[];
-        const tableGuest=guestIsTableGuest(curG);
-        if(tableGuest) wb.push('Gold');
+        if(cTbl) wb.push('Gold');
         if(cS) wb.push('Black');
+        const newList=setGuestListWithTable(curG, cTbl);
         const i=guests.findIndex(g=>g.id===curG.id);
         if(i>-1){
           guests[i]={
@@ -762,6 +774,8 @@
             checkedIn:cI,
             nda:cN?'Signed':'No',
             ndaSigned:!!cN,
+            tableGuest:cTbl,
+            list:newList,
             stiVerified:cS,
             wristbands:wb,
             wristband:wb.includes('Gold')?'Gold':(wb.includes('Black')?'Black':''),
