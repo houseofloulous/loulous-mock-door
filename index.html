@@ -350,10 +350,9 @@
     function openNdaForm(){ window.open(NDA_FORM_URL,'_blank','noopener,noreferrer'); }
     function face(n){ return 'https://i.pravatar.cc/400?img='+n; }
 
+    /** Single practice event (matches live door). */
     const EVENTS=[
-      {name:"May L'Atelier",date:"May 16th",label:"L'ATELIER | May 16th",table:'mock-may',art:"/landing-events/latelier-may-16.jpg"},
       {name:"June L'Atelier",date:"June 13th",label:"L'ATELIER | June 13th",table:'mock-june',art:"/landing-events/latelier-june-13.jpg"},
-      {name:"L'Atelier Out East",date:"July 11th",label:"L'ATELIER OUT EAST | July 11th",table:'mock-east',art:"/landing-events/latelier-july-11.jpg"},
     ];
     const BASE_TABS=[
       {id:'guest',lbl:'Guests'},
@@ -363,20 +362,6 @@
     ];
 
     const MOCK_GUESTS={
-      'mock-may':[
-        {id:'mm-01',name:'Jordan Sample',checkedIn:true,rsvp:'Confirmed',photo:face(1),list:'Guest',nda:'Signed',phone:'555-0101',wristband:'',email:'jordan.sample@example.com'},
-        {id:'mm-02',name:'Alex Demo',checkedIn:false,rsvp:'Maybe',photo:face(2),list:'Guest',nda:'No',phone:'555-0102',wristband:'',email:'alex.demo@example.com'},
-        {id:'mm-03',name:'Riley Practice',checkedIn:true,rsvp:'Confirmed',photo:face(3),list:'Table',nda:'Signed',phone:'555-0103',wristband:'Gold',email:'riley.p@example.com'},
-        {id:'mm-04',name:'Casey Mock',checkedIn:false,rsvp:'',photo:face(4),list:'Working',nda:'No',phone:'555-0104',wristband:'Black',email:''},
-        {id:'mm-05',name:'Taylor Drill',checkedIn:false,rsvp:'Waitlist',photo:face(5),list:'Guest',nda:'No',phone:'555-0105',wristband:'',email:'t.drill@example.com'},
-        {id:'mm-06',name:'Morgan Faux',checkedIn:true,rsvp:'Confirmed',photo:face(6),list:'Table',nda:'Signed',phone:'555-0106',wristband:'Gold',email:'morgan.f@example.com'},
-        {id:'mm-07',name:'Jamie Rehearsal',checkedIn:false,rsvp:'',photo:face(7),list:'Guest',nda:'Signed',phone:'555-0107',wristband:'',email:''},
-        {id:'mm-08',name:'Quinn Sandbox',checkedIn:false,rsvp:'Confirmed',photo:face(8),list:'Table',nda:'No',phone:'555-0108',wristband:'',email:'quinn.s@example.com'},
-        {id:'mm-09',name:'Drew Example',checkedIn:true,rsvp:'Confirmed',photo:face(9),list:'Working',nda:'Signed',phone:'555-0109',wristband:'Black',email:'drew.ex@example.com'},
-        {id:'mm-10',name:'Skyler Test',checkedIn:false,rsvp:'Maybe',photo:face(10),list:'Guest',nda:'No',phone:'555-0110',wristband:'',email:''},
-        {id:'mm-11',name:'Reese Placeholder',checkedIn:true,rsvp:'Confirmed',photo:face(11),list:'Guest',nda:'Signed',phone:'555-0111',wristband:'',email:'reese.p@example.com'},
-        {id:'mm-12',name:'Blair Training',checkedIn:false,rsvp:'',photo:face(12),list:'Table',nda:'No',phone:'555-0112',wristband:'',email:'blair.t@example.com'},
-      ],
       'mock-june':[
         {id:'mj-01',name:'Sage Sample',checkedIn:false,rsvp:'Confirmed',photo:face(15),list:'Guest',nda:'No',phone:'555-0201',wristband:'',email:'sage.s@example.com'},
         {id:'mj-02',name:'River Demo',checkedIn:true,rsvp:'',photo:face(16),list:'Guest',nda:'Signed',phone:'555-0202',wristband:'',email:''},
@@ -391,19 +376,6 @@
         {id:'mj-11',name:'Cameron DryRun',checkedIn:false,rsvp:'Confirmed',photo:face(13),list:'Guest',nda:'Signed',phone:'555-0211',wristband:'',email:''},
         {id:'mj-12',name:'Parker Pretend',checkedIn:true,rsvp:'VIP',photo:face(14),list:'Table',nda:'Signed',phone:'555-0212',wristband:'Gold',email:'parker.p@example.com'},
         {id:'mj-13',name:'Jordan Blacklist',checkedIn:false,rsvp:'',photo:face(25),list:'Guest',nda:'No',phone:'555-0213',wristband:'',email:'',members:['Blacklist']},
-      ],
-      'mock-east':[
-        {id:'me-01',name:'Indigo Sample',checkedIn:false,rsvp:'Premiere',photo:face(26),list:'Guest',nda:'Signed',phone:'555-0301',wristband:'',email:'indigo@example.com'},
-        {id:'me-02',name:'Vesper Demo',checkedIn:true,rsvp:'Premiere',photo:face(27),list:'Guest',nda:'Signed',phone:'555-0302',wristband:'',email:''},
-        {id:'me-03',name:'Sable Mock',checkedIn:false,rsvp:'',photo:face(28),list:'Table',nda:'No',phone:'555-0303',wristband:'',email:'sable.m@example.com'},
-        {id:'me-04',name:'Raven Practice',checkedIn:true,rsvp:'Premiere',photo:face(29),list:'Working',nda:'Signed',phone:'555-0304',wristband:'Black',email:'raven.p@example.com'},
-        {id:'me-05',name:'Onyx Drill',checkedIn:false,rsvp:'Maybe',photo:face(30),list:'Guest',nda:'No',phone:'555-0305',wristband:'',email:''},
-        {id:'me-06',name:'Echo Faux',checkedIn:false,rsvp:'Premiere',photo:face(31),list:'Table',nda:'Signed',phone:'555-0306',wristband:'Gold',email:'echo.f@example.com'},
-        {id:'me-07',name:'Nova Rehearsal',checkedIn:true,rsvp:'',photo:face(32),list:'Guest',nda:'Signed',phone:'555-0307',wristband:'',email:'nova.r@example.com'},
-        {id:'me-08',name:'Lux Sandbox',checkedIn:false,rsvp:'Premiere',photo:face(33),list:'Table',nda:'No',phone:'555-0308',wristband:'',email:''},
-        {id:'me-09',name:'Solstice Example',checkedIn:false,rsvp:'Confirmed',photo:face(34),list:'Guest',nda:'Signed',phone:'555-0309',wristband:'',email:'solstice@example.com'},
-        {id:'me-10',name:'Eclipse Test',checkedIn:false,rsvp:'Premiere',photo:face(35),list:'Guest',nda:'No',phone:'555-0310',wristband:'',email:''},
-        {id:'me-11',name:'Astra Placeholder',checkedIn:true,rsvp:'VIP',photo:face(36),list:'Table',nda:'Signed',phone:'555-0311',wristband:'Gold',email:'astra.p@example.com'},
       ],
     };
 
@@ -833,8 +805,8 @@
       showToast('Added (practice) ✓');
       btn.textContent='Add Guest';
     }
-    ensureLandingSubtitle();
-    buildEvList();
+    if(EVENTS.length===1) pickEv(0);
+    else{ ensureLandingSubtitle(); buildEvList(); }
   </script>
 
 </body>
