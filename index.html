@@ -302,6 +302,13 @@
           </div>
           <div class="modal-toggle-row" style="align-items:flex-start;">
             <div style="flex:1;min-width:0">
+              <div class="modal-toggle-lbl" style="margin-bottom:4px">Tables</div>
+              <div class="det-sublbl">💛 Table guests receive GOLD WRISTBANDS</div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="mTbl" onchange="updateAddWbPills()"><span class="slider"></span></label>
+          </div>
+          <div class="modal-toggle-row" style="align-items:flex-start;">
+            <div style="flex:1;min-width:0">
               <div class="modal-toggle-lbl" style="margin-bottom:4px">STI Tests Verified</div>
               <div class="det-sublbl">🖤 Verified guests receive BLACK WRISTBANDS</div>
             </div>
@@ -473,9 +480,11 @@
     function updateAddWbPills(){
       const el=document.getElementById('addWbPillDisplay');
       if(!el) return;
+      const mTbl=document.getElementById('mTbl');
       const mSTI=document.getElementById('mSTI');
+      const tableOn=!!(mTbl&&mTbl.checked);
       const sti=!!(mSTI&&mSTI.checked);
-      el.innerHTML=buildWBDisplayHTML(false,sti);
+      el.innerHTML=buildWBDisplayHTML(tableOn,sti);
     }
     function getTabsForCurrentTable(){ return BASE_TABS; }
     function defaultTabForCurrentTable(){ return 'guest'; }
@@ -814,7 +823,7 @@
       const mbReset=document.getElementById('addModalBody');
       if(mbReset) mbReset.className='modal-body add-at';
       ['aN','mCoat','mPhoneCheck','mNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-      ['mCI','mNDA','mSTI'].forEach(id=>{
+      ['mCI','mNDA','mSTI','mTbl'].forEach(id=>{
         const n=document.getElementById(id);
         if(n) n.checked=false;
       });
@@ -830,9 +839,12 @@
       if(!name){alert('Guest name required');return;}
       const btn=document.getElementById('addBtn');
       btn.textContent='Adding…';
+      const mTbl=document.getElementById('mTbl');
+      const tableOn=!!(mTbl&&mTbl.checked);
       const mSTI=document.getElementById('mSTI');
       const stiOn=!!(mSTI&&mSTI.checked);
       const wb=[];
+      if(tableOn) wb.push('Gold');
       if(stiOn) wb.push('Black');
       const id='mock-'+Date.now();
       const g=normalizeMockGuest({
@@ -841,13 +853,14 @@
         checkedIn:!!document.getElementById('mCI').checked,
         rsvp:'',
         photo:face((Date.now()%70)+1),
-        list:'Guest',
+        list:tableOn?'Table':'Guest',
         nda:document.getElementById('mNDA').checked?'Signed':'No',
         phone:'555-0199',
-        wristband:stiOn?'Black':'',
+        wristband:tableOn?'Gold':(stiOn?'Black':''),
         email:'',
       });
       g.wristbands=wb;
+      g.tableGuest=tableOn;
       g.stiVerified=stiOn;
       const coat=document.getElementById('mCoat').value.trim();
       const phoneChk=document.getElementById('mPhoneCheck')?document.getElementById('mPhoneCheck').value.trim():'';
