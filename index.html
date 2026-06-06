@@ -107,6 +107,7 @@
     .card-name{font-size:11px;color:var(--dark);line-height:1.3;}
     .card-tick{color:var(--blue);font-size:16px;margin-right:4px;font-weight:700;line-height:1;}
     .card-tag{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--warm);margin-top:2px;display:flex;align-items:center;gap:3px;}
+    .card-cabaret{font-size:11px;line-height:1;flex-shrink:0;}
     .wb-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
     .wb-gold{background:#c9a96e;}
     .wb-black{background:#1a1a1a;border:1px solid #bbb;}
@@ -316,6 +317,7 @@
           </div>
           <div class="modal-toggle-row"><div class="modal-toggle-lbl">🤫 NDA Signed:</div><label class="toggle"><input type="checkbox" id="mNDA" onchange="onAddNDAChange(this)"><span class="slider"></span></label></div>
           <div id="mNdaHint" class="modal-nda-hint"><span>🔴 If NDA is unsigned, please click here and have them sign:</span><a class="modal-nda-link" href="https://forms.gle/gNPU5Etg7HSuhYYY7" target="_blank" rel="noopener noreferrer">🔗</a></div>
+          <div class="modal-toggle-row" id="mCabaretRow" style="display:none"><div class="modal-toggle-lbl">🎭 Cabaret:</div><label class="toggle"><input type="checkbox" id="mCabaret"><span class="slider"></span></label></div>
         </div>
         <div class="modal-card add-sec add-sec-coat">
           <div class="det-input-wrap" style="border-bottom:none">
@@ -365,9 +367,9 @@
       'mock-june':[
         {id:'mj-01',name:'Pat Sample',checkedIn:false,rsvp:'',photo:face(1),list:'Guest',nda:'Signed',phone:'555-1001',email:'pat.sample@example.com'},
         {id:'mj-02',name:'Quinn Demo',checkedIn:false,rsvp:'',photo:face(2),list:'Table',nda:'Signed',phone:'555-1002',wristband:'Gold',email:'quinn.demo@example.com'},
-        {id:'mj-03',name:'Riley Mock',checkedIn:false,rsvp:'',photo:face(3),list:'Guest',nda:'Signed',phone:'555-1003',email:'riley.mock@example.com'},
+        {id:'mj-03',name:'Riley Mock',checkedIn:false,rsvp:'',photo:face(3),list:'Guest',nda:'Signed',phone:'555-1003',email:'riley.mock@example.com',cabaret:true},
         {id:'mj-04',name:'Sam Faux',checkedIn:true,rsvp:'Confirmed',photo:face(4),list:'Guest',nda:'Signed',phone:'555-1004',email:'sam.faux@example.com'},
-        {id:'mj-05',name:'Casey Test',checkedIn:true,rsvp:'Waitlist',photo:face(5),list:'Table',nda:'Signed',phone:'555-1005',wristband:'Gold',email:'casey.test@example.com'},
+        {id:'mj-05',name:'Casey Test',checkedIn:true,rsvp:'Waitlist',photo:face(5),list:'Table',nda:'Signed',phone:'555-1005',wristband:'Gold',email:'casey.test@example.com',cabaret:true},
         {id:'mj-06',name:'Morgan Drill',checkedIn:false,rsvp:'',photo:face(6),list:'Guest',nda:'Signed',phone:'555-1006',email:'morgan.drill@example.com'},
         {id:'mj-07',name:'Jamie Sandbox',checkedIn:false,rsvp:'',photo:face(7),list:'Table',nda:'Signed',phone:'555-1007',wristband:'Gold',email:'jamie.sandbox@example.com'},
         {id:'mj-08',name:'Drew Example',checkedIn:true,rsvp:'Premiere',photo:face(8),list:'Guest',nda:'Signed',phone:'555-1008',email:'drew.example@example.com'},
@@ -507,6 +509,9 @@
       if(!g) return false;
       return listFieldMatches(g,'table')||listFieldMatches(g,'tables');
     }
+    function hasCabaretField(){
+      return curTable==='mock-june';
+    }
     function setGuestListWithTable(g, isTable){
       let segs=listSegmentsLower(g);
       segs=segs.filter(seg=>{
@@ -533,6 +538,7 @@
         coatCheck:g.coatCheck||'',
         phoneCheckNum:g.phoneCheckNum||'',
         doorNotes:g.doorNotes||'',
+        cabaret:!!g.cabaret,
         dateClusterMates:[],
         guestDate:'',
         seatAssignment:'',
@@ -632,7 +638,8 @@
         :`<div class="card-init">${ini(g.name)}</div>`;
       const showGoldDot=g.tableGuest||!!(g.wristbands&&g.wristbands.includes('Gold'));
       const dot=(showGoldDot?`<span class="wb-dot wb-gold"></span>`:'')+(g.stiVerified?`<span class="wb-dot wb-black"></span>`:'');
-      const listTag=`<div class="card-tag">${dot}${esc(g.list||'')}</div>`;
+      const cabTag=g.cabaret?'<span class="card-cabaret" title="Cabaret">🎭</span>':'';
+      const listTag=`<div class="card-tag">${cabTag}${dot}${esc(g.list||'')}</div>`;
       return `<div class="card${g.checkedIn?' checked':''}" onclick="openDetail('${g.id}')">
         ${ph}
         <div class="card-body">
@@ -695,23 +702,27 @@
               <label class="toggle"><input type="checkbox" id="dNDA" ${ndaSig?'checked':''} onchange="onNDA(this)"><span class="slider"></span></label>
             </div>
             <div id="ndaBox">${ndaRow}</div>
+            ${hasCabaretField()?`<div class="det-row">
+              <div class="det-lbl">🎭 Cabaret:</div>
+              <label class="toggle"><input type="checkbox" id="dCabaret" ${g.cabaret?'checked':''} onchange="autoSave()"><span class="slider"></span></label>
+            </div>`:''}
           </div>
           <div class="det-card">
             <div class="det-input-wrap">
               <div class="det-input-lbl">🧥 Coat Check #</div>
-              <input class="det-input" id="dCoat" value="${esc(coatVal)}" placeholder="e.g. 69" onblur="saveLocal()">
+              <input class="det-input" id="dCoat" value="${esc(coatVal)}" placeholder="e.g. 69" oninput="scheduleTextSave()" onblur="saveLocal()">
             </div>
           </div>
           <div class="det-card">
             <div class="det-input-wrap">
               <div class="det-input-lbl">📱 Phone Check #</div>
-              <input class="det-input" id="dPhoneCheck" value="${esc(phoneCheckVal)}" placeholder="e.g. 69" onblur="saveLocal()">
+              <input class="det-input" id="dPhoneCheck" value="${esc(phoneCheckVal)}" placeholder="e.g. 69" oninput="scheduleTextSave()" onblur="saveLocal()">
             </div>
           </div>
           <div class="det-card">
             <div class="det-input-wrap">
               <div class="det-input-lbl">📝 Door Notes:</div>
-              <textarea class="det-input" id="dNotes" placeholder="Issues at the Door" onblur="saveLocal()">${esc(notesVal)}</textarea>
+              <textarea class="det-input" id="dNotes" placeholder="Issues at the Door" oninput="scheduleTextSave()" onblur="saveLocal()">${esc(notesVal)}</textarea>
             </div>
           </div>
         </div>`;
@@ -739,26 +750,46 @@
       if(!hint)return;
       hint.style.display=cb.checked?'none':'flex';
     }
-    function saveLocal(){
-      if(!curG)return;
+    function readDoorTextFromDOM(){
       const coat=document.getElementById('dCoat');
       const phoneCheck=document.getElementById('dPhoneCheck');
       const notes=document.getElementById('dNotes');
-      if(!coat||!notes)return;
-      const vCoat=coat.value.trim();
-      const vPhone=phoneCheck?phoneCheck.value.trim():'';
-      const vNotes=notes.value.trim();
-      local[curG.id]={coat:vCoat,phoneCheck:vPhone,notes:vNotes};
+      if(!coat||!notes) return {vCoat:'',vPhone:'',vNotes:''};
+      return {
+        vCoat:coat.value.trim(),
+        vPhone:phoneCheck?phoneCheck.value.trim():'',
+        vNotes:notes.value.trim()
+      };
+    }
+
+    function applyDoorTextToGuest(vCoat,vPhone,vNotes){
+      if(!curG) return;
+      local[curG.id]={...local[curG.id],coat:vCoat,phoneCheck:vPhone,notes:vNotes};
       const i=guests.findIndex(x=>x.id===curG.id);
       if(i>-1){
         guests[i]={...guests[i],coatCheck:vCoat,phoneCheckNum:vPhone,doorNotes:vNotes};
         if(curG.id===guests[i].id) curG=guests[i];
       }
+    }
+
+    function saveLocal(){
+      if(!curG)return;
+      const {vCoat,vPhone,vNotes}=readDoorTextFromDOM();
+      if(!document.getElementById('dCoat')||!document.getElementById('dNotes')) return;
+      applyDoorTextToGuest(vCoat,vPhone,vNotes);
       showToast('Saved ✓');
     }
+
+    let textSaveTimer=null;
+    function scheduleTextSave(){
+      clearTimeout(textSaveTimer);
+      textSaveTimer=setTimeout(()=>{ saveLocal(); },600);
+    }
+
     let saveTimer=null;
     function autoSave(){
       clearTimeout(saveTimer);
+      clearTimeout(textSaveTimer);
       const myGen=++saveGen;
       saveTimer=setTimeout(()=>{
         if(!curG)return;
@@ -767,15 +798,18 @@
         const dNDA=document.getElementById('dNDA');
         const dTbl=document.getElementById('dTbl');
         const stiEl=document.getElementById('dSTI');
+        const dCabaret=document.getElementById('dCabaret');
         if(!dCI||!dNDA)return;
         const cI=dCI.checked;
         const cN=dNDA.checked;
         const cTbl=dTbl?dTbl.checked:guestIsTableGuest(curG);
         const cS=stiEl && stiEl.checked;
+        const cCab=dCabaret?dCabaret.checked:!!curG.cabaret;
         const wb=[];
         if(cTbl) wb.push('Gold');
         if(cS) wb.push('Black');
         const newList=setGuestListWithTable(curG, cTbl);
+        const text=readDoorTextFromDOM();
         const i=guests.findIndex(g=>g.id===curG.id);
         if(i>-1){
           guests[i]={
@@ -788,16 +822,25 @@
             stiVerified:cS,
             wristbands:wb,
             wristband:wb.includes('Gold')?'Gold':(wb.includes('Black')?'Black':''),
-            sti:cS
+            sti:cS,
+            cabaret:cCab,
+            coatCheck:text.vCoat,
+            phoneCheckNum:text.vPhone,
+            doorNotes:text.vNotes
           };
           curG=guests[i];
         }
+        applyDoorTextToGuest(text.vCoat,text.vPhone,text.vNotes);
         showToast('Saved ✓');
         try{ render(); }catch(_){}
-      },400);
+      },600);
     }
+
     function closeDetail(){
+      clearTimeout(saveTimer);
+      clearTimeout(textSaveTimer);
       saveGen++;
+      saveLocal();
       document.getElementById('detailView').style.display='none';
       document.getElementById('app').style.display='block';
       curG=null;
@@ -816,6 +859,8 @@
       if(mn) mn.placeholder='Any additional info including who approved them (Sam, Daniel & LouLou are the only ones who can)';
       const nda=document.getElementById('mNDA');
       if(nda) onAddNDAChange(nda);
+      const cabRow=document.getElementById('mCabaretRow');
+      if(cabRow) cabRow.style.display=hasCabaretField()?'flex':'none';
       updateAddWbPills();
     }
     function closeAdd(){
@@ -823,11 +868,13 @@
       const mbReset=document.getElementById('addModalBody');
       if(mbReset) mbReset.className='modal-body add-at';
       ['aN','mCoat','mPhoneCheck','mNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-      ['mCI','mNDA','mSTI','mTbl'].forEach(id=>{
+      ['mCI','mNDA','mSTI','mTbl','mCabaret'].forEach(id=>{
         const n=document.getElementById(id);
         if(n) n.checked=false;
       });
       onAddNDAChange({checked:false});
+      const cabRow=document.getElementById('mCabaretRow');
+      if(cabRow) cabRow.style.display='none';
       const mnl=document.getElementById('mNotesLbl');
       if(mnl) mnl.innerHTML='📝 Door Notes: <span style="color:var(--red)">Required</span>';
       const mn=document.getElementById('mNotes');
@@ -862,6 +909,8 @@
       g.wristbands=wb;
       g.tableGuest=tableOn;
       g.stiVerified=stiOn;
+      const mCab=document.getElementById('mCabaret');
+      if(hasCabaretField() && mCab && mCab.checked) g.cabaret=true;
       const coat=document.getElementById('mCoat').value.trim();
       const phoneChk=document.getElementById('mPhoneCheck')?document.getElementById('mPhoneCheck').value.trim():'';
       const notes=document.getElementById('mNotes').value.trim();
