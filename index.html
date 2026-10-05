@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<!-- door-build: events=oct-obscura-atelier-nov-dnd-dec | images=match-github-landing-events | pass=House -->
+<!-- mock-door: practice only — fake guests, no Airtable -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>House of LouLou's — Door</title>
+  <title>House of LouLou's — Mock Door</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="LouLou Door">
+  <meta name="apple-mobile-web-app-title" content="Mock Door">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#162B3B">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/houseofloulous/loulous-doorlist@main/apple-touch-icon.jpg">
+  <link rel="icon" type="image/png" href="mock-app-icon.png">
+  <link rel="apple-touch-icon" href="mock-app-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
   <style>
     :root { --blue:#162B3B; --cream:#f5f0eb; --dark:#1a1a1a; --warm:#8c7b6b; --accent:#c9a96e; --green:#34c759; --red:#c0392b; --border:rgba(0,0,0,0.07); }
@@ -28,6 +28,7 @@
     .ev-logo-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px;}
     .ev-logo{height:62px;margin-bottom:0;}
     .ev-sub{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:32px;margin-top:12px;}
+    .ev-mock-badge{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:0;font-weight:600;}
     #evScreen .ev-list{width:100%;max-width:min(100%,320px);display:flex;flex-direction:column;flex-wrap:nowrap;gap:0;row-gap:0;column-gap:0;padding:0 0 28px;box-sizing:border-box;}
     #evScreen .ev-list>button.ev-item+.ev-item{margin-top:36px;}
     button.ev-item.ev-item-art{
@@ -65,33 +66,19 @@
     .s-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);font-size:13px;pointer-events:none;}
     .hbtn{background:none;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;font-size:11px;letter-spacing:.06em;color:#fff;cursor:pointer;white-space:nowrap;}
     .hbtn.nda{border-color:var(--accent);color:var(--accent);}
-    .hbtn.ratios-btn{padding:8px 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;flex-shrink:0;}
-    .hbtn.ratios-btn svg{width:17px;height:17px;flex-shrink:0;display:block;}
-    .hbtn.ratios-btn.active{background:rgba(255,255,255,.14);border-color:var(--accent);color:var(--accent);}
-    .ratios-btn-lbl{font-size:11px;letter-spacing:.06em;}
-    /* Door list tabs — grid for L'Atelier / DND; horizontal pills for Obscura. */
-    .obscura-tabs-hint{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center;padding:6px 16px 0;}
-    .tabs{display:grid;column-gap:8px;row-gap:6px;align-items:stretch;padding:8px 8px 6px;box-sizing:border-box;border-top:1px solid rgba(255,255,255,.07);}
-    .tabs.tabs-4{grid-template-columns:repeat(4,minmax(0,1fr));}
-    .tabs.tabs-5{grid-template-columns:repeat(5,minmax(0,1fr));}
-    .tabs.tabs-obscura{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:7px;padding:4px 12px 12px;scrollbar-width:none;grid-template-columns:unset;}
-    .tabs.tabs-obscura::-webkit-scrollbar{display:none;}
-    .tabs.tabs-obscura .tab{flex:0 0 auto;width:auto;min-width:max-content;border-radius:20px;border-bottom-width:1px;padding:11px 16px;font-size:14px;letter-spacing:.08em;white-space:nowrap;}
-    .tabs.tabs-obscura .tab.active{border-color:var(--accent);background:rgba(201,169,110,.18);border-bottom-color:var(--accent);}
-    .app-obscura .ob-all-wrap{display:flex;flex-direction:column;gap:18px;padding:8px 0 16px;width:100%;}
-    .app-obscura .ob-sec-wrap{width:100%;}
-    .app-obscura .ob-sec{font-size:17px;letter-spacing:.08em;text-transform:uppercase;color:var(--dark);text-align:center;margin:8px 0 10px;font-weight:400;}
-    .tab{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-bottom:3px solid rgba(255,255,255,.12);border-radius:8px 8px 0 0;padding:10px 4px 9px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:rgba(255,255,255,.48);cursor:pointer;white-space:normal;line-height:1.15;text-align:center;min-width:0;width:100%;display:flex;align-items:center;justify-content:center;transition:color .18s,background .18s,border-color .18s,font-weight .18s;-webkit-hyphens:manual;hyphens:manual;}
-    .tab.active{color:#fff;font-weight:800;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);border-bottom-color:var(--accent);box-shadow:inset 0 -1px 0 rgba(255,255,255,.1);}
+    /* Door list tabs (four segments). */
+    .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:8px;row-gap:6px;align-items:stretch;padding:8px 8px 6px;box-sizing:border-box;border-top:1px solid rgba(255,255,255,.07);}
+    .tab{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-bottom:3px solid rgba(255,255,255,.12);border-radius:8px 8px 0 0;padding:10px 4px 9px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:rgba(255,255,255,.48);cursor:pointer;white-space:normal;line-height:1.15;text-align:center;min-width:0;width:100%;display:flex;align-items:center;justify-content:center;transition:color .18s,background .18s,border-color .18s;-webkit-hyphens:manual;hyphens:manual;}
+    .tab.active{color:#fff;font-weight:800;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.22);border-bottom-color:var(--accent);}
     @media(min-width:400px){
-      .tab{padding:11px 5px 10px;font-size:13px;letter-spacing:.04em;}
+      .tab{padding:10px 4px;font-size:11px;letter-spacing:.05em;}
     }
     @media(min-width:520px){
-      .tab{padding:12px 6px 11px;font-size:14px;letter-spacing:.05em;}
+      .tab{padding:11px 8px;font-size:12px;letter-spacing:.08em;}
     }
     .stats{padding:9px 16px;display:flex;gap:14px;background:var(--cream);border-bottom:1px solid var(--border);}
     .stat{font-size:12px;color:var(--warm);}
-    .stat-pending{color:var(--accent);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+    .stat-pending{color:var(--accent);}
     .stat b{color:var(--dark);font-style:normal;font-weight:400;}
     /** Guest grid: flex-wrap + centered rows. */
     #main{width:100%;}
@@ -111,7 +98,6 @@
       width:100%;
     }
     .grid>.card{flex:0 0 auto;width:var(--guest-card-w);}
-    /** Tables tab: seated parties grouped in a gold frame */
     .tables-grid{flex-direction:column;align-items:stretch;gap:14px;}
     .table-party{
       width:100%;
@@ -122,13 +108,7 @@
       box-shadow:0 1px 4px rgba(0,0,0,.05);
       box-sizing:border-box;
     }
-    .table-party-inner{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      align-items:stretch;
-      gap:var(--ggrid);
-    }
+    .table-party-inner{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:var(--ggrid);}
     .table-party-inner>.card{flex:0 0 auto;width:var(--guest-card-w);}
     .card{background:#fff;border-radius:10px;overflow:hidden;cursor:pointer;position:relative;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:transform .12s,filter .15s,opacity .15s;}
     .card:active{transform:scale(.96);}
@@ -139,19 +119,6 @@
     .card-name{font-size:11px;color:var(--dark);line-height:1.3;}
     .card-tick{color:var(--blue);font-size:16px;margin-right:4px;font-weight:700;line-height:1;}
     .card-tag{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--warm);margin-top:2px;display:flex;align-items:center;gap:3px;}
-    @media(min-width:481px){
-      .card-body{padding:8px 9px 10px;}
-      .card-name{font-size:15px;line-height:1.35;}
-      .card-tag{font-size:11px;margin-top:3px;}
-      .card-tick{font-size:18px;}
-    }
-    @media(min-width:768px){
-      .card-body{padding:10px 10px 12px;}
-      .card-name{font-size:18px;line-height:1.35;}
-      .card-tag{font-size:12px;}
-      .card-tick{font-size:22px;}
-    }
-    .card-cabaret{font-size:11px;line-height:1;flex-shrink:0;}
     .wb-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
     .wb-gold{background:#c9a96e;}
     .wb-black{background:#1a1a1a;border:1px solid #bbb;}
@@ -159,20 +126,6 @@
     .spinner{width:26px;height:26px;border:2px solid rgba(0,0,0,.1);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
     .cstate-txt{font-size:13px;color:var(--warm);letter-spacing:.1em;}
-    .ratios-wrap{max-width:820px;margin:0 auto;padding:16px 14px 28px;}
-    .ratios-grid{display:grid;grid-template-columns:1fr;gap:14px;}
-    @media(min-width:560px){.ratios-grid{grid-template-columns:1fr 1fr;}}
-    .ratio-card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:14px;padding:18px 16px 16px;box-shadow:0 1px 5px rgba(0,0,0,.05);}
-    .ratio-title{font-size:16px;color:var(--dark);margin-bottom:14px;letter-spacing:.02em;text-align:center;}
-    .ratio-body{display:flex;align-items:center;justify-content:center;gap:16px;}
-    .ratio-pie{flex:0 0 auto;width:132px;height:132px;position:relative;filter:drop-shadow(0 2px 8px rgba(0,0,0,.07));}
-    .ratio-pie svg{display:block;width:132px;height:132px;}
-    .ratio-pie-empty{width:132px;height:132px;border-radius:50%;background:conic-gradient(from -90deg,#ebe5dd 0 33%,#e3ddd5 33% 66%,#ebe5dd 66% 100%);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--warm);text-align:center;padding:10px;line-height:1.35;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);}
-    .ratio-legend{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
-    .ratio-leg-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dark);line-height:1.25;}
-    .ratio-swatch{width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);}
-    .ratio-leg-lbl{flex:1;}
-    .ratio-leg-pct{color:var(--warm);font-size:12px;white-space:nowrap;}
     #detailView{display:none;position:fixed;inset:0;background:#f2ede8;z-index:200;overflow-y:auto;}
     .detail-head{background:var(--blue);padding:0 0 24px;text-align:center;}
     .detail-nav{display:flex;align-items:center;padding:14px 16px 0;}
@@ -249,9 +202,8 @@
     .modal-nda-hint{padding:10px 16px 14px;font-size:12px;color:var(--red);display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid rgba(0,0,0,.05);line-height:1.4;}
     .modal-nda-link{font-size:16px;text-decoration:none;flex-shrink:0;}
     .modal-actions{display:flex;gap:10px;flex-shrink:0;padding:14px 14px max(20px,env(safe-area-inset-bottom));background:#f2ede8;border-top:1px solid rgba(0,0,0,.06);}
-    .mcancel{flex:1 1 0;min-width:0;min-height:48px;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:14px;font-size:13px;cursor:pointer;color:var(--dark);}
-    .msubmit{flex:2 1 0;min-width:0;min-height:48px;background:var(--blue);border:none;border-radius:12px;padding:14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;font-weight:500;}
-    .msubmit:disabled{opacity:.55;cursor:wait;}
+    .mcancel{flex:1;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:14px;font-size:13px;cursor:pointer;color:var(--dark);}
+    .msubmit{flex:2;background:var(--blue);border:none;border-radius:12px;padding:14px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#fff;cursor:pointer;font-weight:500;}
     /* Narrow phones: keep this block LAST so it wins over min-width:.tab rules above */
     @media(max-width:480px){
       html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
@@ -264,8 +216,8 @@
       .search-wrap{flex:1 1 100%;min-width:0;}
       .search-input,.s-icon{font-size:17px;}
       .hbtn{flex:1 1 calc(50% - 4px);min-width:0;font-size:13px;padding:9px 5px;letter-spacing:.03em;white-space:normal;text-align:center;line-height:1.2;}
-      .tabs{padding:8px 5px 6px;column-gap:6px;}
-      .tabs .tab{padding:10px 2px 9px;font-size:13px;line-height:1.2;}
+      .tabs{padding:0 4px;column-gap:4px;}
+      .tabs .tab{padding:11px 1px;font-size:13px;letter-spacing:0;line-height:1.15;}
       .stat{font-size:15px;}
       .card-body{padding:9px 8px 10px;}
       .card-name{font-size:16px;line-height:1.35;}
@@ -296,11 +248,12 @@
       <a class="ev-logo-link" href="https://www.houseofloulous.com/" target="_blank" rel="noopener noreferrer" title="House of LouLou's — main site">
         <img class="ev-logo" src="https://cdn.jsdelivr.net/gh/houseofloulous/loulous-doorlist@main/LL%20white%20logo%20name%20only.png" alt="LouLou's">
       </a>
+      <div class="ev-mock-badge">Practice app</div>
       <div class="ev-sub" id="evLandingSubtitle">Select event</div>
       <div class="ev-list" id="evList"></div>
     </div>
     <div class="ev-landing-spacer" aria-hidden="true"></div>
-    <button type="button" class="ev-reset" onclick="resetKey()">Reset Door Password</button>
+    <button type="button" class="ev-reset" onclick="resetKey()">Reset practice password</button>
   </div>
 
   <div id="app">
@@ -316,14 +269,9 @@
           <span class="s-icon">⌕</span>
           <input class="search-input" id="searchInput" type="text" placeholder="Search guests…" oninput="render()">
         </div>
-        <button type="button" class="hbtn ratios-btn" id="ratiosToolbarBtn" onclick="toggleRatios()" title="Guest ratios" aria-label="Guest ratios" aria-pressed="false">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 2 A10 10 0 0 1 22 12 L12 12 Z" fill="currentColor" opacity=".9"/><path d="M22 12 A10 10 0 0 1 12 22 L12 12 Z" fill="currentColor" opacity=".55"/></svg>
-          <span class="ratios-btn-lbl">Ratios</span>
-        </button>
         <button class="hbtn" onclick="openAdd()">+ ADD NEW GUEST</button>
         <button type="button" class="hbtn nda" id="ndaToolbarBtn" onclick="openNdaForm()">NDA</button>
       </div>
-      <p class="obscura-tabs-hint" id="obscuraTabHint" hidden>List filter</p>
       <div class="tabs" id="tabs" role="tablist"></div>
     </div>
     <div class="stats" id="stats"></div>
@@ -380,7 +328,6 @@
           </div>
           <div class="modal-toggle-row"><div class="modal-toggle-lbl">🤫 NDA Signed:</div><label class="toggle"><input type="checkbox" id="mNDA" onchange="onAddNDAChange(this)"><span class="slider"></span></label></div>
           <div id="mNdaHint" class="modal-nda-hint"><span>🔴 If NDA is unsigned, please click here and have them sign:</span><a class="modal-nda-link" href="https://forms.gle/gNPU5Etg7HSuhYYY7" target="_blank" rel="noopener noreferrer">🔗</a></div>
-          <div class="modal-toggle-row" id="mCabaretRow" style="display:none"><div class="modal-toggle-lbl">🎭 Cabaret:</div><label class="toggle"><input type="checkbox" id="mCabaret"><span class="slider"></span></label></div>
         </div>
         <div class="modal-card add-sec add-sec-coat">
           <div class="det-input-wrap" style="border-bottom:none">
@@ -409,47 +356,24 @@
   </div>
 
   <script>
-    const BASE='appY6p2HwRtDmOvAf';
+    const PRACTICE_PASS='practice';
+    const LS_KEY='ll_door_practice_pass';
     const NDA_FORM_URL='https://forms.gle/gNPU5Etg7HSuhYYY7';
     function openNdaForm(){ window.open(NDA_FORM_URL,'_blank','noopener,noreferrer'); }
-    /** Door lists — Airtable table names must match exactly (calendar order). */
+    function face(n){ return 'https://i.pravatar.cc/400?img='+n; }
+
+    /** Practice copy of L'Atelier October 17 — fake names only. */
     const EVENTS=[
-      {name:"Obscura",date:"October 9th",label:"OBSCURA | October 9th",table:"Obscura 10/9",art:"/landing-events/obscura-oct-9.jpg",tabs:'obscura'},
-      {name:"October L'Atelier",date:"October 17th",label:"L'ATELIER | October 17th",table:"tbl6sWH7iRCV1NW8E",art:"/landing-events/latelier-oct-17.png",tabs:'atelier'},
-      {name:"Obscura",date:"November 6th",label:"OBSCURA | November 6th",table:"Obscura 11/6",art:"/landing-events/obscura-nov-6.jpg",tabs:'obscura'},
-      {name:"Do Not Disturb",date:"November 21st",label:"DO NOT DISTURB | November 21st",table:"Do Not Disturb 11/21",art:"/landing-events/do-not-disturb-nov-21.jpg",tabs:'dnd'},
-      {name:"December L'Atelier",date:"December 12th",label:"L'ATELIER | December 12th",table:"L'Atelier 12/12",art:"/landing-events/latelier-december-12.jpg",tabs:'atelier'},
+      {name:"October L'Atelier",date:"October 17th",label:"L'ATELIER | October 17th",table:'mock-oct',art:"https://door.houseofloulous.com/landing-events/latelier-oct-17.png",tabs:'atelier'},
     ];
-    /** Obscura — `match` = Airtable List option. */
-    const OBSCURA_TABS=[
-      {id:'ga',lbl:'GA',match:'GA'},
-      {id:'salon2',lbl:'Salon (2)',match:'Salon Table for 2'},
-      {id:'salon4',lbl:'Salon (4)',match:'Salon Table for 4'},
-      {id:'booth',lbl:"Madame's Booth",match:"Madame's Booth"},
-      {id:'stage',lbl:'Stage seat',match:'Intimate Stage Table Seat'},
-      {id:'working',lbl:'Working',match:'Working'},
-      {id:'all',lbl:'All'},
-    ];
-    const OBSCURA_ALL_SECTIONS=[
-      {match:'GA',lbl:'GENERAL ADMISSION'},
-      {match:'Intimate Stage Table Seat',lbl:'INTIMATE STAGE TABLE SEAT'},
-      {match:'Salon Table for 2',lbl:'SALON TABLE OF 2'},
-      {match:'Salon Table for 4',lbl:'SALON TABLE OF 4'},
-      {match:"Madame's Booth",lbl:"MADAME'S BOOTH"},
-      {match:'Working',lbl:'WORKING'},
-    ];
-    const DND_TABS=[
-      {id:'dinner',lbl:'Dinner'},
-      {id:'nightcap',lbl:'Nightcap'},
-      {id:'working',lbl:'Working'},
-      {id:'all',lbl:'Full List'},
-    ];
-    const RUNA_TABS=[
-      {id:'working',lbl:'Working'},
-      {id:'vip',lbl:'VIP'},
-      {id:'tables',lbl:'Table'},
-      {id:'ga',lbl:'GA'},
-      {id:'all',lbl:'Full List'},
+    /** Practice seating parties (first-name match). Same shape as the live Tables tab. */
+    const TABLE_PARTY_GROUPS=[
+      ['Quinn','Casey'],
+      ['Jamie','Blair','Sage'],
+      ['Emery','Finch'],
+      ['Wren','Bay'],
+      ['Rue'],
+      ['Fox','Lou'],
     ];
     const BASE_TABS=[
       {id:'guest',lbl:'Guests'},
@@ -457,131 +381,115 @@
       {id:'working',lbl:'Working'},
       {id:'all',lbl:'Full List'},
     ];
-    const CABARET_TABS=[
-      {id:'all',lbl:'Full List'},
-      {id:'lust',lbl:'Lust Caution'},
-      {id:'garden',lbl:'Garden Nocturne'},
-      {id:'tables',lbl:'Tables'},
-      {id:'working',lbl:'Working'},
-    ];
-    /** Tables tab seating parties (first-name match, in display order). */
-    const TABLE_PARTY_GROUPS=[
-      ['Alon','Megan'],
-      ['Hans','Evie','Haley Stickel'],
-      ['David','Haley'],
-      ['Ed','Paula'],
-      ['Sacha'],
-      ['Yannick','Kat'],
-    ];
-    /** Airtable field aliases across older/newer schemas. */
-    const F_CHECKED_IN=['Checked In','Check-in'];
-    const F_STI=['STI Verified','STI Tests'];
-    const F_COAT=['Coat Check #'];
-    const F_PHONE_CHECK=['Phone Check #','Phone check #','Pouch #','Phone pouch'];
-    const F_NOTES=['Notes','Door Notes'];
-    /** +1 / date name — text column(s) only. */
-    const F_GUEST_DATE=['Date','Date name','Guest date','Plus one','+1','Date (guest)'];
-    /** Optional second notes column (only shown in UI if the field exists in the table). */
-    const F_NOTES_EXTRA=['Internal Notes','Ops Notes','Table Notes','Seating Notes'];
-    /** Some tables use "Wristbands" (plural), others "Wristband". */
-    const F_WRISTBAND=['Wristbands','Wristband'];
-    const F_LIST=['List'];
-    const F_SEAT_ASSIGNMENT=['Seat Assignment'];
-    const F_CABARET=['Cabaret'];
-    const F_GENDER=['Gender (from Rolodex)','Gender','Guest Gender','Primary Gender','Gender (Guest)'];
-    const F_PARTNER_GENDER=["Partner's Gender",'Partner Gender','Gender (Partner)'];
-    const F_APP_TYPE=['Application Type','Individual or Couple','Individual/Couple','Attending as','Apply Type','Guest Application Type','Please select one to continue','Type (Application)','Couple or Individual'];
-    const F_DESIRE=['Desire'];
-    const F_GUEST_TYPE_DIRECT=['Guest Type','Guest type','New vs Returning','New/Returning'];
-    const F_RELATIONSHIP_DIRECT=['Relationship Status','Relationship status','Singles vs Partnered','Single vs Partnered'];
 
-    const RATIO_COLORS={
-      lavender:'#c4b5d4',
-      peach:'#e9c4a0',
-      mint:'#a8ccc4',
-      female:'#c4b5d4',
-      male:'#e9c4a0',
-      other:'#a8ccc4',
-      single:'#c4b5d4',
-      partnered:'#e9c4a0',
-      newGuest:'#c4b5d4',
-      returning:'#e9c4a0',
-      exhibitionist:'#e9c4a0',
-      unknown:'#a8ccc4',
-      voyeur:'#c4b5d4'
+    const MOCK_GUESTS={
+      'mock-oct':[
+        {id:'mj-01',name:'Pat Sample',checkedIn:false,rsvp:'',photo:face(1),list:'Guest',nda:'Signed',phone:'555-1001',email:'pat.sample@example.com'},
+        {id:'mj-02',name:'Quinn Demo',checkedIn:false,rsvp:'',photo:face(2),list:'Table',nda:'Signed',phone:'555-1002',wristband:'Gold',email:'quinn.demo@example.com'},
+        {id:'mj-03',name:'Riley Mock',checkedIn:false,rsvp:'',photo:face(3),list:'Guest',nda:'Signed',phone:'555-1003',email:'riley.mock@example.com'},
+        {id:'mj-04',name:'Sam Faux',checkedIn:true,rsvp:'Confirmed',photo:face(4),list:'Guest',nda:'Signed',phone:'555-1004',email:'sam.faux@example.com'},
+        {id:'mj-05',name:'Casey Test',checkedIn:true,rsvp:'Waitlist',photo:face(5),list:'Table',nda:'Signed',phone:'555-1005',wristband:'Gold',email:'casey.test@example.com'},
+        {id:'mj-06',name:'Morgan Drill',checkedIn:false,rsvp:'',photo:face(6),list:'Guest',nda:'Signed',phone:'555-1006',email:'morgan.drill@example.com'},
+        {id:'mj-07',name:'Jamie Sandbox',checkedIn:false,rsvp:'',photo:face(7),list:'Table',nda:'Signed',phone:'555-1007',wristband:'Gold',email:'jamie.sandbox@example.com'},
+        {id:'mj-08',name:'Drew Example',checkedIn:true,rsvp:'Premiere',photo:face(8),list:'Guest',nda:'Signed',phone:'555-1008',email:'drew.example@example.com'},
+        {id:'mj-09',name:'Avery Placeholder',checkedIn:false,rsvp:'Premiere',photo:face(9),list:'Guest',nda:'Signed',phone:'555-1009',email:'avery.placeholder@example.com'},
+        {id:'mj-10',name:'Sky Training',checkedIn:true,rsvp:'Premiere',photo:face(10),list:'Guest',nda:'No',phone:'555-1010',email:'sky.training@example.com'},
+        {id:'mj-11',name:'Reese DryRun',checkedIn:false,rsvp:'Maybe',photo:face(11),list:'Guest',nda:'No',phone:'555-1011',email:'reese.dryrun@example.com'},
+        {id:'mj-12',name:'Blair Pretend',checkedIn:false,rsvp:'Confirmed',photo:face(12),list:'Table',nda:'Signed',phone:'555-1012',wristband:'Gold',email:'blair.pretend@example.com'},
+        {id:'mj-13',name:'Sage Rehearsal',checkedIn:false,rsvp:'Waitlist',photo:face(13),list:'Table',nda:'Signed',phone:'555-1013',email:'sage.rehearsal@example.com'},
+        {id:'mj-14',name:'Rowan Staging',checkedIn:false,rsvp:'',photo:face(14),list:'Working',nda:'Signed',phone:'555-1014',wristband:'Black',stiVerified:true,email:'rowan.staging@example.com'},
+        {id:'mj-15',name:'Emery Beta',checkedIn:false,rsvp:'',photo:face(15),list:'Table',nda:'No',phone:'555-1015',wristband:'Gold',email:'emery.beta@example.com'},
+        {id:'mj-16',name:'Lake Canary',checkedIn:true,rsvp:'Confirmed',photo:face(16),list:'Guest',nda:'Signed',phone:'555-1016',email:'lake.canary@example.com'},
+        {id:'mj-17',name:'Finch Dummy',checkedIn:false,rsvp:'Premiere',photo:face(17),list:'Table',nda:'Signed',phone:'555-1017',email:'finch.dummy@example.com'},
+        {id:'mj-18',name:'Grey Decoy',checkedIn:false,rsvp:'',photo:face(18),list:'Guest',nda:'Signed',phone:'555-1018',email:'grey.decoy@example.com'},
+        {id:'mj-19',name:'Wren Prototype',checkedIn:false,rsvp:'Maybe',photo:face(19),list:'Table',nda:'Signed',phone:'555-1019',wristband:'Gold',email:'wren.prototype@example.com'},
+        {id:'mj-20',name:'Ash Template',checkedIn:true,rsvp:'Premiere',photo:face(20),list:'Guest',nda:'No',phone:'555-1020',email:'ash.template@example.com'},
+        {id:'mj-21',name:'Bay Fixture',checkedIn:false,rsvp:'Confirmed',photo:face(21),list:'Table',nda:'Signed',phone:'555-1021',email:'bay.fixture@example.com'},
+        {id:'mj-22',name:'Kit Stub',checkedIn:false,rsvp:'Waitlist',photo:face(22),list:'Guest',nda:'No',phone:'555-1022',email:'kit.stub@example.com'},
+        {id:'mj-23',name:'Lane Scaffold',checkedIn:true,rsvp:'Confirmed',photo:face(23),list:'Guest',nda:'Signed',phone:'555-1023',wristband:'Black',stiVerified:true,email:'lane.scaffold@example.com'},
+        {id:'mj-24',name:'Rue Mirage',checkedIn:true,rsvp:'Maybe',photo:face(24),list:'Table',nda:'No',phone:'555-1024',wristband:'Gold',email:'rue.mirage@example.com'},
+        {id:'mj-25',name:'Fox Knockoff',checkedIn:false,rsvp:'Waitlist',photo:face(25),list:'Table',nda:'Signed',phone:'555-1025',wristband:'Gold',email:'fox.knockoff@example.com'},
+        {id:'mj-26',name:'Jo Imitation',checkedIn:false,rsvp:'Premiere',photo:face(26),list:'Working',nda:'No',phone:'555-1026',email:'jo.imitation@example.com'},
+        {id:'mj-27',name:'Lou Clone',checkedIn:false,rsvp:'VIP',photo:face(27),list:'Table',nda:'Signed',phone:'555-1027',email:'lou.clone@example.com'},
+        {id:'mj-28',name:'Tai Ringer',checkedIn:false,rsvp:'Premiere',photo:face(28),list:'Working',nda:'Signed',phone:'555-1028',wristband:'Black',stiVerified:true,email:'tai.ringer@example.com'},
+        {id:'mj-29',name:'Ren Charade',checkedIn:true,rsvp:'Confirmed',photo:face(29),list:'Guest',nda:'Signed',phone:'555-1029',email:'ren.charade@example.com'},
+        {id:'mj-30',name:'Val Pilot',checkedIn:true,rsvp:'Confirmed',photo:face(30),list:'Table',nda:'Signed',phone:'555-1030',email:'val.pilot@example.com'},
+        {id:'mj-31',name:'Max Trial',checkedIn:true,rsvp:'Confirmed',photo:face(31),list:'Guest',nda:'Signed',phone:'555-1031',email:'max.trial@example.com'},
+        {id:'mj-32',name:'Jay Experiment',checkedIn:true,rsvp:'',photo:face(32),list:'Guest',nda:'Signed',phone:'555-1032',email:'jay.experiment@example.com'},
+        {id:'mj-33',name:'Bo Control',checkedIn:false,rsvp:'Premiere',photo:face(33),list:'Guest',nda:'No',phone:'555-1033',email:'bo.control@example.com'},
+        {id:'mj-34',name:'Mo Placebo',checkedIn:true,rsvp:'VIP',photo:face(34),list:'Table',nda:'Signed',phone:'555-1034',wristband:'Gold',email:'mo.placebo@example.com'},
+        {id:'mj-35',name:'Cal Blank',checkedIn:true,rsvp:'VIP',photo:face(35),list:'Guest',nda:'Signed',phone:'555-1035',email:'cal.blank@example.com'},
+        {id:'mj-36',name:'Gil Generic',checkedIn:false,rsvp:'',photo:face(36),list:'Table',nda:'Signed',phone:'555-1036',email:'gil.generic@example.com'},
+        {id:'mj-37',name:'Ian Default',checkedIn:true,rsvp:'Waitlist',photo:face(37),list:'Guest',nda:'Signed',phone:'555-1037',email:'ian.default@example.com'},
+        {id:'mj-38',name:'Lee Anonymous',checkedIn:true,rsvp:'Premiere',photo:face(38),list:'Guest',nda:'Signed',phone:'555-1038',email:'lee.anonymous@example.com'},
+        {id:'mj-39',name:'Kim Lorem',checkedIn:false,rsvp:'Maybe',photo:face(39),list:'Guest',nda:'Signed',phone:'555-1039',email:'kim.lorem@example.com'},
+        {id:'mj-40',name:'Ann Ipsum',checkedIn:true,rsvp:'Premiere',photo:face(40),list:'Guest',nda:'No',phone:'555-1040',email:'ann.ipsum@example.com'},
+        {id:'mj-41',name:'Bea Facsimile',checkedIn:false,rsvp:'Confirmed',photo:face(41),list:'Working',nda:'Signed',phone:'555-1041',email:'bea.facsimile@example.com'},
+        {id:'mj-42',name:'Cy Simulant',checkedIn:false,rsvp:'VIP',photo:face(42),list:'Guest',nda:'Signed',phone:'555-1042',email:'cy.simulant@example.com'},
+        {id:'mj-43',name:'Di StandIn',checkedIn:false,rsvp:'Maybe',photo:face(43),list:'Table',nda:'No',phone:'555-1043',wristband:'Gold',email:'di.standin@example.com'},
+        {id:'mj-44',name:'Eli Walkthrough',checkedIn:false,rsvp:'VIP',photo:face(44),list:'Guest',nda:'Signed',phone:'555-1044',email:'eli.walkthrough@example.com'},
+        {id:'mj-45',name:'Flo SoftLaunch',checkedIn:false,rsvp:'Premiere',photo:face(45),list:'Table',nda:'No',phone:'555-1045',email:'flo.softlaunch@example.com'},
+        {id:'mj-46',name:'Gus Preview',checkedIn:false,rsvp:'Maybe',photo:face(46),list:'Working',nda:'Signed',phone:'555-1046',email:'gus.preview@example.com'},
+        {id:'mj-47',name:'Hal Mannequin',checkedIn:false,rsvp:'',photo:face(47),list:'Guest',nda:'Signed',phone:'555-1047',email:'hal.mannequin@example.com'},
+        {id:'mj-48',name:'Ivy Sham',checkedIn:true,rsvp:'Premiere',photo:face(48),list:'Guest',nda:'Signed',phone:'555-1048',email:'ivy.sham@example.com'},
+        {id:'mj-49',name:'Jax Forgery',checkedIn:false,rsvp:'Maybe',photo:face(49),list:'Working',nda:'Signed',phone:'555-1049',wristband:'Black',stiVerified:true,email:'jax.forgery@example.com'},
+        {id:'mj-50',name:'Kay Counterfeit',checkedIn:true,rsvp:'VIP',photo:face(50),list:'Guest',nda:'No',phone:'555-1050',email:'kay.counterfeit@example.com'},
+        {id:'mj-51',name:'Lux Artifice',checkedIn:true,rsvp:'Premiere',photo:face(51),list:'Working',nda:'Signed',phone:'555-1051',wristband:'Black',stiVerified:true,email:'lux.artifice@example.com'},
+        {id:'mj-52',name:'Nan Simulacrum',checkedIn:false,rsvp:'Waitlist',photo:face(52),list:'Table',nda:'Signed',phone:'555-1052',email:'nan.simulacrum@example.com'},
+        {id:'mj-53',name:'Ora Bootleg',checkedIn:true,rsvp:'Maybe',photo:face(53),list:'Guest',nda:'Signed',phone:'555-1053',email:'ora.bootleg@example.com'},
+        {id:'mj-54',name:'Paz TestPilot',checkedIn:true,rsvp:'VIP',photo:face(54),list:'Guest',nda:'Signed',phone:'555-1054',email:'paz.testpilot@example.com'},
+        {id:'mj-55',name:'Rex BetaTester',checkedIn:false,rsvp:'VIP',photo:face(55),list:'Guest',nda:'Signed',phone:'555-1055',email:'rex.betatester@example.com'},
+        {id:'mj-56',name:'Uma QA',checkedIn:false,rsvp:'Premiere',photo:face(56),list:'Guest',nda:'Signed',phone:'555-1056',email:'uma.qa@example.com'},
+        {id:'mj-57',name:'Vic UAT',checkedIn:true,rsvp:'Confirmed',photo:face(57),list:'Guest',nda:'No',phone:'555-1057',email:'vic.uat@example.com'},
+        {id:'mj-58',name:'Wes SmokeTest',checkedIn:true,rsvp:'Premiere',photo:face(58),list:'Guest',nda:'Signed',phone:'555-1058',email:'wes.smoketest@example.com'},
+        {id:'mj-59',name:'Yen Regression',checkedIn:false,rsvp:'',photo:face(59),list:'Working',nda:'No',phone:'555-1059',wristband:'Black',stiVerified:true,email:'yen.regression@example.com'},
+        {id:'mj-60',name:'Zed StagingOnly',checkedIn:false,rsvp:'',photo:face(60),list:'Guest',nda:'Signed',phone:'555-1060',email:'zed.stagingonly@example.com'},
+        {id:'mj-61',name:'Ace NotReal',checkedIn:true,rsvp:'',photo:face(61),list:'Guest',nda:'No',phone:'555-1061',email:'ace.notreal@example.com'},
+        {id:'mj-62',name:'Dot Fictional',checkedIn:true,rsvp:'',photo:face(62),list:'Guest',nda:'Signed',phone:'555-1062',email:'dot.fictional@example.com'},
+        {id:'mj-63',name:'Eve Imaginary',checkedIn:false,rsvp:'Premiere',photo:face(63),list:'Working',nda:'No',phone:'555-1063',wristband:'Black',stiVerified:true,email:'eve.imaginary@example.com'},
+        {id:'mj-64',name:'Fay Hypothetical',checkedIn:false,rsvp:'Confirmed',photo:face(64),list:'Guest',nda:'No',phone:'555-1064',email:'fay.hypothetical@example.com'},
+        {id:'mj-65',name:'Gio Theoretical',checkedIn:false,rsvp:'Waitlist',photo:face(65),list:'Working',nda:'Signed',phone:'555-1065',email:'gio.theoretical@example.com'},
+        {id:'mj-66',name:'Hue Synthetic',checkedIn:false,rsvp:'',photo:face(66),list:'Working',nda:'Signed',phone:'555-1066',wristband:'Black',stiVerified:true,email:'hue.synthetic@example.com'},
+        {id:'mj-67',name:'Ira Artificial',checkedIn:false,rsvp:'Confirmed',photo:face(67),list:'Guest',nda:'Signed',phone:'555-1067',email:'ira.artificial@example.com'},
+        {id:'mj-68',name:'Jen Manufactured',checkedIn:false,rsvp:'Waitlist',photo:face(68),list:'Table',nda:'Signed',phone:'555-1068',email:'jen.manufactured@example.com'},
+        {id:'mj-69',name:'Kai Fabricated',checkedIn:true,rsvp:'Waitlist',photo:face(69),list:'Guest',nda:'Signed',phone:'555-1069',email:'kai.fabricated@example.com'},
+        {id:'mj-70',name:'Luz Invented',checkedIn:false,rsvp:'Confirmed',photo:'https://i.pravatar.cc/400?u=mockdoor70',list:'Guest',nda:'No',phone:'555-1070',email:'luz.invented@example.com'},
+        {id:'mj-71',name:'Noa MadeUp',checkedIn:true,rsvp:'Confirmed',photo:'https://i.pravatar.cc/400?u=mockdoor71',list:'Guest',nda:'Signed',phone:'555-1071',email:'noa.madeup@example.com'},
+        {id:'mj-72',name:'Pip PretendPerson',checkedIn:false,rsvp:'Premiere',photo:'https://i.pravatar.cc/400?u=mockdoor72',list:'Guest',nda:'No',phone:'555-1072',email:'pip.pretendperson@example.com'},
+        {id:'mj-73',name:'Rio PracticeGuest',checkedIn:false,rsvp:'Maybe',photo:'https://i.pravatar.cc/400?u=mockdoor73',list:'Guest',nda:'Signed',phone:'555-1073',email:'rio.practiceguest@example.com'},
+        {id:'mj-74',name:'Sol DressRehearsal',checkedIn:false,rsvp:'Confirmed',photo:'https://i.pravatar.cc/400?u=mockdoor74',list:'Guest',nda:'No',phone:'555-1074',email:'sol.dressrehearsal@example.com'},
+        {id:'mj-75',name:'Tex TableRead',checkedIn:false,rsvp:'VIP',photo:'https://i.pravatar.cc/400?u=mockdoor75',list:'Guest',nda:'No',phone:'555-1075',email:'tex.tableread@example.com'},
+        {id:'mj-76',name:'Una Blocking',checkedIn:false,rsvp:'Waitlist',photo:'https://i.pravatar.cc/400?u=mockdoor76',list:'Guest',nda:'No',phone:'555-1076',email:'una.blocking@example.com'},
+      ],
     };
 
-    const PENDING_KEY='ll_door_pending_v1';
-    let guests=[],curTab='guest',lastGuestTab='guest',curTable='',curG=null,local={};
-    let tableFields=new Set();
+    let guests=[],curTab='guest',curTable='',curG=null,local={};
     let saveGen=0;
-    let TOKEN='';
-    const PASS='House';
-    function doorPasswordOk(p){
-      return String(p||'').trim().toLowerCase()==='house';
-    }
-    function ensureToken(){
-      if(!TOKEN){
-        const p=(localStorage.getItem('ll_pass')||'').trim();
-        if(doorPasswordOk(p)){
-          TOKEN='pat77o3kWwRFu0E0G.0efbab0f505d6fc54447711ff2543dd1f9a54adc62a7f9f9f96a73524faea154';
-          return TOKEN;
-        }
-        const entered=(prompt('Enter door password:')||'').trim();
-        if(doorPasswordOk(entered)){
-          localStorage.setItem('ll_pass',PASS);
-          TOKEN='pat77o3kWwRFu0E0G.0efbab0f505d6fc54447711ff2543dd1f9a54adc62a7f9f9f96a73524faea154';
-        } else {
-          alert('Wrong password');
-          throw new Error('Auth failed');
-        }
-      }
-      return TOKEN;
-    }
 
+    function ensurePracticeAuth(){
+      const ok=(localStorage.getItem(LS_KEY)||'')===PRACTICE_PASS;
+      if(ok) return;
+      const entered=(prompt('Practice password:')||'').trim();
+      if(entered!==PRACTICE_PASS){
+        alert('Wrong password — use: practice');
+        throw new Error('Auth failed');
+      }
+      localStorage.setItem(LS_KEY,PRACTICE_PASS);
+    }
     function resetKey(){
-      localStorage.removeItem('ll_pass');
-      TOKEN='';
+      localStorage.removeItem(LS_KEY);
       location.reload();
     }
-
     function showToast(msg='Saved ✓',ms=700){
       const t=document.getElementById('toast');
       t.textContent='Saved ✓'; t.classList.add('show');
       setTimeout(()=>t.classList.remove('show'),ms);
     }
-    function fmtErr(e){
-      const s=String(e&&e.message!=null?e.message:e||'Error');
-      return s.length>220?s.slice(0,217)+'…':s;
-    }
-    function isTransientErr(e){
-      const st=e&&e.status!=null?e.status:0;
-      return st===0||st===429||st===502||st===503||st===504;
-    }
     function esc(s=''){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function ini(n){ return n.split(' ').map(p=>p[0]||'').join('').substring(0,2).toUpperCase(); }
-    function rawWristbandFromFields(f){
-      if(!f||typeof f!=='object') return undefined;
-      for(const n of F_WRISTBAND){
-        if(Object.prototype.hasOwnProperty.call(f,n)) return f[n];
-      }
-      return undefined;
-    }
-    function parseWristbandsFromFields(f){
-      const w=rawWristbandFromFields(f);
-      if(Array.isArray(w)) return w.filter(Boolean);
-      if(w) return [w];
-      return [];
-    }
-    function wristKeyInFields(obj){
-      if(!obj||typeof obj!=='object') return null;
-      if(Object.prototype.hasOwnProperty.call(obj,'Wristbands')) return 'Wristbands';
-      if(Object.prototype.hasOwnProperty.call(obj,'Wristband')) return 'Wristband';
-      return null;
-    }
-    function stiVerifiedFromFields(f,wbArr){
-      if(typeof f['STI Verified']==='boolean') return f['STI Verified'];
-      return wbArr.includes('Black');
+    function ndaIsSigned(raw){
+      const s=String(raw==null?'':raw).trim();
+      return s==='Signed'||s==='Yes';
     }
     function buildWBDisplayHTML(hasGold,stiVerified){
       let html='';
@@ -590,7 +498,6 @@
       if(!hasGold && !stiVerified) html+='<div class="wb-pill none">No wristbands assigned</div>';
       return html;
     }
-    /** Add-guest modal: wristband pills (Gold = Tables toggle; Black = STI). */
     function updateAddWbPills(){
       const el=document.getElementById('addWbPillDisplay');
       if(!el) return;
@@ -600,70 +507,8 @@
       const sti=!!(mSTI&&mSTI.checked);
       el.innerHTML=buildWBDisplayHTML(tableOn,sti);
     }
-
-    function currentEventConfig(){
-      return EVENTS.find(e=>e.table===curTable)||null;
-    }
-    function eventTabMode(){
-      const ev=currentEventConfig();
-      return ev&&ev.tabs?ev.tabs:'atelier';
-    }
-    function isObscuraTable(){ return eventTabMode()==='obscura'; }
-    function isDoNotDisturbTable(){ return eventTabMode()==='dnd'; }
-    function isRunaTable(){ return eventTabMode()==='runa'; }
-    function syncEventUi(){
-      const app=document.getElementById('app');
-      if(app) app.classList.toggle('app-obscura',isObscuraTable());
-      const nda=document.getElementById('ndaToolbarBtn');
-      if(nda) nda.style.display=isObscuraTable()?'none':'';
-      const hint=document.getElementById('obscuraTabHint');
-      if(hint) hint.hidden=!isObscuraTable();
-    }
-    function isObscuraGaGuest(g){
-      return listFieldMatches(g,'GA');
-    }
-    function scrollActiveTabIntoView(smooth){
-      if(!isObscuraTable()) return;
-      requestAnimationFrame(()=>{
-        document.querySelector('#tabs .tab.active')?.scrollIntoView?.({
-          inline:'center',block:'nearest',behavior:smooth?'smooth':'auto'
-        });
-      });
-    }
-
-    function getTabsForCurrentTable(){
-      const mode=eventTabMode();
-      if(mode==='obscura') return OBSCURA_TABS;
-      if(mode==='dnd') return DND_TABS;
-      if(mode==='runa') return RUNA_TABS;
-      if(hasCabaretField()) return CABARET_TABS;
-      return BASE_TABS;
-    }
-    function defaultTabForCurrentTable(){
-      const mode=eventTabMode();
-      if(mode==='obscura') return 'working';
-      if(mode==='runa') return 'ga';
-      if(mode==='dnd') return 'dinner';
-      return 'guest';
-    }
-    function hasNotesExtraField(){
-      try{ return F_NOTES_EXTRA.some(n=>tableFields.has(n)); }catch(_){ return false; }
-    }
-    function eventHasCabaretFlag(){
-      const ev=currentEventConfig();
-      return !!(ev&&ev.cabaret);
-    }
-    function seedCabaretTableFields(){
-      if(eventHasCabaretFlag()) F_CABARET.forEach(n=>tableFields.add(n));
-    }
-    function hasCabaretField(){
-      try{
-        if(F_CABARET.some(n=>tableFields.has(n))) return true;
-        return eventHasCabaretFlag();
-      }catch(_){ return false; }
-    }
-
-    /** Airtable List is often multi-select; normalize to lowercase segments. */
+    function getTabsForCurrentTable(){ return BASE_TABS; }
+    function defaultTabForCurrentTable(){ return 'guest'; }
     function listSegmentsLower(g){
       const s=(g.list||'').toLowerCase()
         .replace(/\s*·\s*/g,',')
@@ -672,7 +517,6 @@
         .replace(/\n+/g,',');
       return s.split(/[,;]+/).map(x=>x.trim()).filter(Boolean);
     }
-    /** Collapse List labels for reliable matching (apostrophes, spaces, “Night Cap” vs “Nightcap”). */
     function normListKey(s){
       return String(s==null?'':s).toLowerCase().replace(/[\u0027\u2019]/g,'').replace(/\s+/g,'');
     }
@@ -680,18 +524,10 @@
       const want=normListKey(tokenOrLabel);
       return listSegmentsLower(g).some(seg=>normListKey(seg)===want);
     }
-    /** Gold wristbands: List must include Table (or Tables), not the legacy Patron field. */
-    function guestIsTableFromFields(f){
-      if(!f||typeof f!=='object') return false;
-      const list=Array.isArray(f.List)?f.List.filter(Boolean).join(', '):(f.List==null||f.List===''?'':String(f.List));
-      const stub={list};
-      return listFieldMatches(stub,'table')||listFieldMatches(stub,'tables');
-    }
     function guestIsTableGuest(g){
       if(!g) return false;
       return listFieldMatches(g,'table')||listFieldMatches(g,'tables');
     }
-    /** Update guest list label when table toggle changes (keeps Guest/Working, adds or removes Table). */
     function setGuestListWithTable(g, isTable){
       let segs=listSegmentsLower(g);
       segs=segs.filter(seg=>{
@@ -699,298 +535,33 @@
         return k!=='table' && k!=='tables';
       });
       if(isTable) segs.push('Table');
-      else if(!segs.length) segs.push(isRunaTable()?'GA':'Guest');
+      else if(!segs.length) segs.push('Guest');
       return segs.join(', ');
     }
-    /** Map list labels to exact Airtable single-/multi-select option spelling. */
-    function listSegmentForAirtable(seg){
-      const k=normListKey(seg);
-      if(k==='guest') return 'Guest';
-      if(k==='table'||k==='tables') return 'Table';
-      if(k==='working') return 'Working';
-      if(k==='vip') return 'VIP';
-      if(k==='ga') return 'GA';
-      if(k==='dinner') return 'Dinner';
-      if(k==='nightcap') return 'Nightcap';
-      if(k==='latelier') return "L'Atelier";
-      const raw=String(seg||'').trim();
-      return raw||'Guest';
+    function normalizeMockGuest(g){
+      const wristbands=[];
+      if(g.wristband==='Gold') wristbands.push('Gold');
+      if(g.wristband==='Black') wristbands.push('Black');
+      const tableGuest=guestIsTableGuest(g);
+      const stiVerified=typeof g.stiVerified==='boolean'?g.stiVerified:wristbands.includes('Black');
+      return {
+        ...g,
+        tableGuest,
+        stiVerified,
+        wristbands,
+        wristband:wristbands.includes('Gold')?'Gold':(wristbands.includes('Black')?'Black':''),
+        ndaSigned:ndaIsSigned(g.nda),
+        coatCheck:g.coatCheck||'',
+        phoneCheckNum:g.phoneCheckNum||'',
+        doorNotes:g.doorNotes||'',
+        dateClusterMates:[],
+        guestDate:'',
+        seatAssignment:'',
+      };
     }
-    function listValueForAirtable(listStr){
-      const s=String(listStr==null?'':listStr)
-        .replace(/\s*·\s*/g,',')
-        .replace(/\s*\/\s*/g,',')
-        .replace(/\s+and\s+/g,',')
-        .replace(/\n+/g,',');
-      const segs=s.split(/[,;]+/).map(x=>x.trim()).filter(Boolean).map(listSegmentForAirtable);
-      if(!segs.length) return null;
-      if(segs.length===1) return segs[0];
-      return segs;
+    function cloneMockGuests(key){
+      return (MOCK_GUESTS[key]||[]).map(normalizeMockGuest);
     }
-
-    function ensureLandingSubtitle(){
-      const el=document.getElementById('evLandingSubtitle');
-      if(el) el.textContent='Select event';
-    }
-
-    function buildEvList(){
-      document.getElementById('evList').innerHTML=EVENTS.map((e,i)=>
-        `<button type="button" class="ev-item ev-item-art" onclick="pickEv(${i})" aria-label="${esc(e.label)}">` +
-        `<img class="ev-art" src="${esc(e.art)}" alt="${esc(e.label)}" width="800" height="450" loading="eager" decoding="async">` +
-        `</button>`
-      ).join('');
-    }
-
-    function pickEv(i){
-      const e=EVENTS[i];
-      if(!e) return;
-      curTable=e.table;
-      curTab=defaultTabForCurrentTable();
-      syncEventUi();
-      document.getElementById('eventTitle').textContent=e.label;
-      document.getElementById('evScreen').style.display='none';
-      document.getElementById('app').style.display='block';
-      load();
-    }
-
-    function showEvScreen(){
-      if(EVENTS.length===1){ pickEv(0); return; }
-      document.getElementById('evScreen').style.display='flex';
-      document.getElementById('app').style.display='none';
-      document.getElementById('detailView').style.display='none';
-    }
-
-    function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-    /** Airtable request with transient network / rate-limit retries. Optional tableName for sync queue. */
-    async function req(path='',opts={},tableName){
-      const tbl=tableName!=null?tableName:curTable;
-      const maxAttempts=4;
-      let lastErr;
-      for(let attempt=0; attempt<maxAttempts; attempt++){
-        try{
-          const token=ensureToken();
-          const r=await fetch(`https://api.airtable.com/v0/${BASE}/${encodeURIComponent(tbl)}${path}`,{
-            ...opts,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',...(opts.headers||{})}
-          });
-          let d={};
-          try{d=await r.json();}catch(_){}
-          if(!r.ok){
-            if(r.status===401||r.status===403){
-              /* Door password is unrelated to Airtable auth — keep ll_pass so the prompt doesn't return every visit. */
-              TOKEN='';
-            }
-            const err=new Error(d?.error?.message||String(r.status));
-            err.status=r.status;
-            throw err;
-          }
-          return d;
-        }catch(e){
-          lastErr=e;
-          const st=e.status||0;
-          const msg=String(e.message||'');
-          const transient=
-            st===429||st===502||st===503||st===504||
-            /failed to fetch|networkerror|load failed|fetch|timeout|aborted|network connection was lost|internet connection appears to be offline/i.test(msg);
-          const noRetry=st===401||st===403||st===404||st===400||st===422;
-          if(noRetry||!transient||attempt===maxAttempts-1) throw e;
-          await sleep(400*Math.pow(2,attempt)+Math.random()*200);
-        }
-      }
-      throw lastErr;
-    }
-
-    function enqueuePending(recordId,tableId,fields){
-      try{
-        const raw=localStorage.getItem(PENDING_KEY);
-        let arr=raw?JSON.parse(raw):[];
-        const i=arr.findIndex(x=>x.recordId===recordId&&x.tableId===tableId);
-        if(i>-1) arr[i]={...arr[i], fields:{...arr[i].fields,...fields}, ts:Date.now()};
-        else arr.push({recordId,tableId,fields:{...fields}, ts:Date.now()});
-        localStorage.setItem(PENDING_KEY, JSON.stringify(arr.slice(-500)));
-      }catch(_){}
-    }
-
-    function pendingCountForTable(tableId){
-      try{
-        const raw=localStorage.getItem(PENDING_KEY);
-        if(!raw) return 0;
-        const arr=JSON.parse(raw);
-        return arr.filter(x=>x.tableId===tableId).length;
-      }catch(_){ return 0; }
-    }
-
-    function isPermanentPendingErr(e){
-      const st=e&&e.status!=null?e.status:0;
-      return st===400||st===401||st===403||st===404||st===422;
-    }
-
-    let flushBusy=false;
-    async function flushPendingQueue(){
-      if(flushBusy) return;
-      const raw=localStorage.getItem(PENDING_KEY);
-      if(!raw) return;
-      let arr;
-      try{ arr=JSON.parse(raw); }catch(_){ return; }
-      if(!arr.length) return;
-      flushBusy=true;
-      try{
-        const before=arr.length;
-        const remaining=[];
-        let dropped=0;
-        const maxAge=7*24*60*60*1000;
-        for(const item of arr){
-          try{
-            await patchGuestResilient(item.recordId, item.fields, item.tableId);
-          }catch(e){
-            const fails=(item.failCount||0)+1;
-            const age=Date.now()-(item.ts||0);
-            if(isPermanentPendingErr(e)||age>maxAge||fails>=6){
-              dropped++;
-              console.warn('Dropped pending door sync', item.recordId, e&&e.message);
-              continue;
-            }
-            remaining.push({...item, failCount:fails, ts:item.ts||Date.now()});
-          }
-        }
-        localStorage.setItem(PENDING_KEY, JSON.stringify(remaining));
-        if(remaining.length!==before||dropped) try{ render(); }catch(_){}
-      }finally{
-        flushBusy=false;
-      }
-    }
-
-    async function retryPendingSync(){
-      await flushPendingQueue();
-      try{ render(); }catch(_){}
-    }
-
-    /**
-     * PATCH with retries for common Airtable mismatches: missing "STI Verified" field,
-     * Wristband as single-select (string) vs multi-select (array).
-     */
-    async function patchGuestResilient(recordId,fields,tableName){
-      let f={...fields};
-      const hasWB=Object.prototype.hasOwnProperty.call(f,'Wristbands')||Object.prototype.hasOwnProperty.call(f,'Wristband');
-      const hasList=Object.prototype.hasOwnProperty.call(f,'List');
-      let triedCheckinAlt=false;
-      for(let attempt=0; attempt<12; attempt++){
-        try{
-          await req('/'+recordId,{method:'PATCH',body:JSON.stringify({fields:f})},tableName);
-          return;
-        }catch(e){
-          const low=String(e.message||'').toLowerCase();
-          if((low.includes('unknown field')||low.includes('could not find field')||low.includes('field name')||low.includes('unknown_column')||low.includes('invalid_column'))){
-            const msg0=String(e.message||'');
-            const mBad=msg0.match(/"([^"]+)"/);
-            if(mBad && mBad[1] && Object.prototype.hasOwnProperty.call(f,mBad[1])){
-              const next={...f};
-              delete next[mBad[1]];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'Patron')){
-              const next={...f};
-              delete next['Patron'];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'Wristbands')){
-              const next={...f};
-              delete next['Wristbands'];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'Wristband')){
-              const next={...f};
-              delete next['Wristband'];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'STI Verified')){
-              const next={...f};
-              delete next['STI Verified'];
-              next['STI Tests']=f['STI Verified'];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'STI Tests')){
-              const next={...f};
-              delete next['STI Tests'];
-              f=next;
-              continue;
-            }
-            if(!triedCheckinAlt && Object.prototype.hasOwnProperty.call(f,'Checked In')){
-              triedCheckinAlt=true;
-              const next={...f};
-              next['Check-in']=next['Checked In'];
-              delete next['Checked In'];
-              f=next;
-              continue;
-            }
-            if(Object.prototype.hasOwnProperty.call(f,'Check-in')||Object.prototype.hasOwnProperty.call(f,'Checked In')){
-              const next={...f};
-              delete next['Check-in'];
-              delete next['Checked In'];
-              f=next;
-              continue;
-            }
-          }
-          if(Object.prototype.hasOwnProperty.call(f,'NDA') && (low.includes('invalid')||low.includes('cannot')||low.includes('failed')) && /nda|choice|select|option|cell/i.test(low)){
-            if(f.NDA==='Signed'){ f={...f,NDA:'Yes'}; continue; }
-            if(f.NDA==='Yes'){ f={...f,NDA:'Signed'}; continue; }
-          }
-          if((Object.prototype.hasOwnProperty.call(f,'STI Verified')||Object.prototype.hasOwnProperty.call(f,'STI Tests')) && (low.includes('invalid')||low.includes('cannot')||low.includes('failed')) && /sti|choice|select|option|cell/i.test(low)){
-            const next={...f};
-            delete next['STI Verified'];
-            delete next['STI Tests'];
-            f=next;
-            continue;
-          }
-          if(hasList && (low.includes('invalid')||low.includes('cannot')||low.includes('failed')) && /list|choice|select|option|cell/i.test(low)){
-            const lv=f.List;
-            if(Array.isArray(lv)){
-              if(lv.length===0){ f={...f,List:null}; continue; }
-              if(lv.length===1){ f={...f,List:lv[0]}; continue; }
-              f={...f,List:lv[0]};
-              continue;
-            }
-            if(lv===null){ f={...f,List:[]}; continue; }
-            if(typeof lv==='string' && (low.includes('array')||low.includes('multiple'))){
-              f={...f,List:lv.split(/[,;]+/).map(x=>x.trim()).filter(Boolean)};
-              continue;
-            }
-          }
-          if(!hasWB) throw e;
-          const wk=wristKeyInFields(f);
-          if(!wk) throw e;
-          const w=f[wk];
-          if(Array.isArray(w)){
-            if(w.length===0){
-              f={...f,[wk]:null};
-              continue;
-            }
-            if(w.length===1){
-              f={...f,[wk]:w[0]};
-              continue;
-            }
-            f={...f,[wk]:w[0]};
-            continue;
-          }
-          if(w===null && (low.includes('invalid')||low.includes('cannot'))){
-            f={...f,[wk]:[]};
-            continue;
-          }
-          if(typeof w==='string' && (low.includes('array')||low.includes('multiple')||(low.includes('invalid')&&(low.includes('wristband')||low.includes('wristbands'))))){
-            f={...f,[wk]:[w]};
-            continue;
-          }
-          throw e;
-        }
-      }
-      throw new Error('Could not save after retries');
-    }
-
     function sortGuestsByName(list){
       return [...list].sort((a,b)=>{
         const an=(a?.name||'').trim();
@@ -998,596 +569,62 @@
         return an.localeCompare(bn,undefined,{sensitivity:'base'});
       });
     }
-
-    function ndaIsSigned(raw){
-      const s=String(raw==null?'':raw).trim();
-      return s==='Signed'||s==='Yes';
+    function ensureLandingSubtitle(){
+      const el=document.getElementById('evLandingSubtitle');
+      if(el) el.textContent='Select event';
     }
-
-    function pickField(candidates){
-      for(const n of candidates){
-        if(tableFields.has(n)) return n;
-      }
-      const lower=new Map();
-      for(const k of tableFields) lower.set(k.toLowerCase(),k);
-      for(const n of candidates){
-        const k=lower.get(n.toLowerCase());
-        if(k) return k;
-      }
-      return null;
+    function buildEvList(){
+      document.getElementById('evList').innerHTML=EVENTS.map((e,i)=>
+        `<button type="button" class="ev-item ev-item-art" onclick="pickEv(${i})" aria-label="${esc(e.label)}">` +
+        `<img class="ev-art" src="${esc(e.art)}" alt="${esc(e.label)}" width="800" height="450" loading="eager" decoding="async">` +
+        `</button>`
+      ).join('');
     }
-    /** Never map pouch numbers onto the guest contact Phone column. */
-    function pickPhoneCheckField(){
-      const blocked=new Set(['phone','phone number','mobile','cell','tel','telephone']);
-      for(const n of F_PHONE_CHECK){
-        if(tableFields.has(n) && !blocked.has(n.toLowerCase())) return n;
-      }
-      const lower=new Map();
-      for(const k of tableFields) lower.set(k.toLowerCase(),k);
-      for(const n of F_PHONE_CHECK){
-        const k=lower.get(n.toLowerCase());
-        if(k && !blocked.has(k.toLowerCase())) return k;
-      }
-      return null;
+    function pickEv(i){
+      const e=EVENTS[i];
+      if(!e) return;
+      curTable=e.table;
+      curTab=defaultTabForCurrentTable();
+      document.getElementById('eventTitle').textContent=e.label;
+      document.getElementById('evScreen').style.display='none';
+      document.getElementById('app').style.display='block';
+      load();
     }
-    function fieldAny(f,candidates){
-      for(const n of candidates){
-        if(Object.prototype.hasOwnProperty.call(f,n)) return f[n];
-      }
-      return undefined;
+    function showEvScreen(){
+      document.getElementById('evScreen').style.display='flex';
+      document.getElementById('app').style.display='none';
+      document.getElementById('detailView').style.display='none';
+      ensureLandingSubtitle();
+      buildEvList();
     }
-    function fieldKeyMatch(f,candidates){
-      for(const n of candidates){
-        if(Object.prototype.hasOwnProperty.call(f,n)) return n;
-      }
-      const lower=new Map();
-      for(const k of Object.keys(f||{})) lower.set(k.toLowerCase(),k);
-      for(const n of candidates){
-        const k=lower.get(String(n).toLowerCase());
-        if(k) return k;
-      }
-      return null;
-    }
-    function fieldKeyByPattern(f,patterns,skipPartner){
-      for(const k of Object.keys(f||{})){
-        const kl=k.toLowerCase();
-        if(skipPartner && /partner/.test(kl)) continue;
-        if(patterns.some(p=>kl.includes(p))) return k;
-      }
-      return null;
-    }
-    function fieldValueLine(f,candidates){
-      const key=fieldKeyMatch(f,candidates);
-      if(!key) return '';
-      return airtableValueToNameLine(f[key]);
-    }
-    function fieldStr(f,candidates){
-      return fieldValueLine(f,candidates);
-    }
-    function fieldGenderFromRecord(f){
-      let v=fieldValueLine(f,F_GENDER);
-      if(v) return v;
-      for(const k of Object.keys(f||{})){
-        const kl=k.toLowerCase();
-        if(!kl.includes('gender')||kl.includes('partner')) continue;
-        v=airtableValueToNameLine(f[k]);
-        if(v) return v;
-      }
-      return '';
-    }
-    function fieldPartnerGenderFromRecord(f){
-      let v=fieldValueLine(f,F_PARTNER_GENDER);
-      if(v) return v;
-      const k=fieldKeyByPattern(f,['partner','gender'],false);
-      if(k && /partner/.test(k.toLowerCase())) return airtableValueToNameLine(f[k]);
-      return '';
-    }
-    function fieldAppTypeFromRecord(f){
-      let v=fieldValueLine(f,F_APP_TYPE);
-      if(v) return v;
-      const k=fieldKeyByPattern(f,['individual','couple','application type','attending as','select one'],false);
-      return k?airtableValueToNameLine(f[k]):'';
-    }
-    function fieldPartnerNameFromRecord(f){
-      let v=fieldValueLine(f,["Partner's Name",'Partner Name','Partner Full Name']);
-      if(v) return v;
-      const k=fieldKeyByPattern(f,["partner's name",'partner name'],false);
-      return k?airtableValueToNameLine(f[k]):'';
-    }
-    function fieldGuestTypeDirectFromRecord(f){
-      let v=fieldValueLine(f,F_GUEST_TYPE_DIRECT);
-      if(v) return v;
-      const k=fieldKeyByPattern(f,['guest type','new vs','new/return','returning guest'],false);
-      return k?airtableValueToNameLine(f[k]):'';
-    }
-    function fieldRelationshipDirectFromRecord(f){
-      let v=fieldValueLine(f,F_RELATIONSHIP_DIRECT);
-      if(v) return v;
-      for(const k of Object.keys(f||{})){
-        const kl=k.toLowerCase();
-        if(kl==='relationship') continue;
-        if(!kl.includes('relationship')&&!kl.includes('single vs')&&!kl.includes('partnered')&&!kl.includes('singles vs')) continue;
-        v=airtableValueToNameLine(f[k]);
-        if(v) return v;
-      }
-      return '';
-    }
-    function recordHasRelationshipLink(f){
-      const key=fieldKeyMatch(f,['Relationship']);
-      if(!key) return false;
-      const v=f[key];
-      if(v==null||v==='') return false;
-      if(Array.isArray(v)) return v.length>0;
-      return true;
-    }
-    function recordHasCoupleFlag(f){
-      for(const k of Object.keys(f||{})){
-        const kl=k.toLowerCase();
-        if((kl==='couple'||kl.includes('couple')) && f[k]===true) return true;
-        if(kl.includes('couple') && typeof f[k]==='string' && /couple/i.test(String(f[k]))) return true;
-      }
-      return false;
-    }
-    /** Use for +1 / date name: text, or skip unresolved linked-record ID arrays (use a Lookup in Airtable for those). */
-    function airtableValueToNameLine(v){
-      if(v==null||v==='') return '';
-      if(typeof v==='string' || typeof v==='number' || typeof v==='boolean') return String(v).trim();
-      if(typeof v==='object' && !Array.isArray(v)){
-        if(v.name!=null && String(v.name).trim()) return String(v.name).trim();
-        if(v.value!=null && String(v.value).trim()) return String(v.value).trim();
-      }
-      if(Array.isArray(v)){
-        if(!v.length) return '';
-        if(v.every(x=>typeof x==='string' && /^rec[a-zA-Z0-9]{10,}/.test(x))) return '';
-        return v.map(airtableValueToNameLine).filter(Boolean).join(', ');
-      }
-      return '';
-    }
-    function fieldStrGuestDate(f){
-      for(const n of F_GUEST_DATE){
-        if(!Object.prototype.hasOwnProperty.call(f,n)) continue;
-        const s=airtableValueToNameLine(f[n]);
-        if(s) return s;
-      }
-      return '';
-    }
-    function fieldStrSeatAssignment(f){
-      for(const n of F_SEAT_ASSIGNMENT){
-        if(!Object.prototype.hasOwnProperty.call(f,n)) continue;
-        const s=airtableValueToNameLine(f[n]);
-        if(s) return s;
-      }
-      return '';
-    }
-
-    function normGenderLabel(raw){
-      const k=String(raw||'').trim().toLowerCase();
-      if(!k) return '';
-      if(/^f(emale)?$/.test(k)||k==='woman'||k==='w') return 'Female';
-      if(/^m(ale)?$/.test(k)||k==='man') return 'Male';
-      if(/non[- ]?binary|nb|other|enby|x/.test(k)) return 'Other';
-      if(k.includes('female')||k.includes('woman')) return 'Female';
-      if(k.includes('male')||k.includes('man')) return 'Male';
-      return 'Other';
-    }
-
-    function normRelationshipLabel(raw){
-      const k=String(raw||'').trim().toLowerCase();
-      if(!k) return '';
-      if(/couple|partner|pair|duo|two/.test(k)) return 'Partnered';
-      if(/individual|single|solo|alone|one/.test(k)) return 'Single';
-      return '';
-    }
-
-    function normGuestTypeDirect(raw){
-      const k=String(raw||'').trim().toLowerCase();
-      if(!k) return '';
-      if(k.includes('new')) return 'New Guest';
-      if(k.includes('return')) return 'Returning';
-      return '';
-    }
-    function normRelationshipDirect(raw){
-      const k=String(raw||'').trim().toLowerCase();
-      if(!k) return '';
-      if(/partner|couple|duo|pair/.test(k)) return 'Partnered';
-      if(/single|solo|individual|alone/.test(k)) return 'Single';
-      return '';
-    }
-    function guestIsPartnered(g){
-      if(g.hasRelationshipLink) return true;
-      const direct=normRelationshipDirect(g.relationshipDirect);
-      if(direct) return direct==='Partnered';
-      const rel=normRelationshipLabel(g.appType);
-      if(rel) return rel==='Partnered';
-      if(g.coupleFlag) return true;
-      return !!(String(g.partnerName||'').trim()||String(g.partnerGender||'').trim());
-    }
-    /** Guest Type pie reads Airtable "Guest Type" (New / Returning). */
-    function guestTypeBucketForGuest(g){
-      const direct=normGuestTypeDirect(g.guestTypeDirect);
-      return direct||'Returning';
-    }
-    function relationshipBucketForGuest(g){
-      const direct=normRelationshipDirect(g.relationshipDirect);
-      if(direct) return direct;
-      return guestIsPartnered(g)?'Partnered':'Single';
-    }
-
-    function normDesireLabel(raw){
-      const k=String(raw||'').trim().toLowerCase();
-      if(!k) return 'Unknown';
-      if(/exhibition/.test(k)) return 'Exhibitionist';
-      if(/voyeur/.test(k)) return 'Voyeur';
-      return 'Unknown';
-    }
-
-    function guestIsWorking(g){
-      return listFieldMatches(g,'working');
-    }
-
-    /** All ratio pies use the door list; anyone with List = Working is excluded. */
-    function guestsForRatios(){
-      return guests.filter(g=>!guestIsWorking(g));
-    }
-
-    function refreshRatiosIfOpen(){
-      if(curTab!=='ratios') render();
-    }
-
-    function countGenderBuckets(pool){
-      const counts={Female:0,Male:0,Other:0};
-      for(const g of pool){
-        const people=[];
-        if(g.gender) people.push(g.gender);
-        if(g.partnerGender) people.push(g.partnerGender);
-        if(!people.length) continue;
-        for(const raw of people){
-          const label=normGenderLabel(raw);
-          if(label) counts[label]=(counts[label]||0)+1;
-        }
-      }
-      return counts;
-    }
-
-    function countRelationshipBuckets(pool){
-      const counts={Single:0,Partnered:0};
-      for(const g of pool){
-        const bucket=relationshipBucketForGuest(g);
-        counts[bucket]=(counts[bucket]||0)+1;
-      }
-      return counts;
-    }
-
-    function countGuestTypeBuckets(pool){
-      const counts={'New Guest':0,'Returning':0};
-      for(const g of pool){
-        const bucket=guestTypeBucketForGuest(g);
-        counts[bucket]=(counts[bucket]||0)+1;
-      }
-      return counts;
-    }
-
-    function countDesireBuckets(pool){
-      const counts={Exhibitionist:0,Unknown:0,Voyeur:0};
-      for(const g of pool){
-        const d=normDesireLabel(g.desire);
-        counts[d]=(counts[d]||0)+1;
-      }
-      return counts;
-    }
-
-    function pctNum(n,total){
-      if(!total) return 0;
-      return Math.round((n/total)*1000)/10;
-    }
-
-    function pct(n,total){
-      if(!total) return '0%';
-      return pctNum(n,total).toFixed(1).replace(/\.0$/,'')+'%';
-    }
-
-    function pieLabelColor(hex){
-      const h=String(hex||'').replace('#','');
-      if(h.length!==6) return '#2a2a2a';
-      const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
-      return (0.299*r+0.587*g+0.114*b)>170?'#2a2a2a':'#fff';
-    }
-
-    function pieChartSvg(segments,size){
-      const active=segments.filter(s=>s.value>0);
-      const total=active.reduce((s,x)=>s+x.value,0);
-      if(!total) return '';
-      const cx=size/2,cy=size/2,r=size/2-5;
-      let angle=-Math.PI/2;
-      const slices=[];
-      const dividers=[];
-      const labels=[];
-      for(const seg of active){
-        const frac=seg.value/total;
-        const a0=angle;
-        const a1=angle+frac*2*Math.PI;
-        if(frac>=0.999){
-          slices.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${seg.color}"/>`);
-        } else {
-          const x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0);
-          const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
-          const large=frac>0.5?1:0;
-          slices.push(`<path d="M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1} Z" fill="${seg.color}"/>`);
-          dividers.push(`<line x1="${cx}" y1="${cy}" x2="${x0}" y2="${y0}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>`);
-        }
-        dividers.push(`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a1)}" y2="${cy+r*Math.sin(a1)}" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>`);
-        if(frac>=0.06){
-          const mid=a0+frac*Math.PI;
-          const lx=cx+(r*0.58)*Math.cos(mid),ly=cy+(r*0.58)*Math.sin(mid);
-          labels.push(`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="${pieLabelColor(seg.color)}" font-size="13" font-family="'Instrument Serif',serif" font-weight="700">${pct(seg.value,total)}</text>`);
-        }
-        angle=a1;
-      }
-      return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" aria-hidden="true"><circle cx="${cx}" cy="${cy}" r="${r+1}" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="1"/>${slices.join('')}${dividers.join('')}${labels.join('')}</svg>`;
-    }
-
-    function ratioCardHtml(title,segments,order){
-      const total=segments.reduce((s,x)=>s+x.value,0);
-      const pie=total
-        ?`<div class="ratio-pie">${pieChartSvg(segments,132)}</div>`
-        :`<div class="ratio-pie ratio-pie-empty">No data yet</div>`;
-      const legend=order.map(key=>{
-        const seg=segments.find(s=>s.label===key)||{label:key,value:0,color:'#ddd'};
-        return `<div class="ratio-leg-row"><span class="ratio-swatch" style="background:${seg.color}"></span><span class="ratio-leg-lbl">${esc(seg.label)}</span><span class="ratio-leg-pct">${pct(seg.value,total)}</span></div>`;
-      }).join('');
-      return `<div class="ratio-card"><div class="ratio-title">${esc(title)}</div><div class="ratio-body">${pie}<div class="ratio-legend">${legend}</div></div></div>`;
-    }
-
-    function renderRatios(){
-      const pool=guestsForRatios();
-      const genderCounts=countGenderBuckets(pool);
-      const genderSegs=[
-        {label:'Female',value:genderCounts.Female||0,color:RATIO_COLORS.female},
-        {label:'Male',value:genderCounts.Male||0,color:RATIO_COLORS.male},
-        {label:'Other',value:genderCounts.Other||0,color:RATIO_COLORS.other}
-      ];
-      const relCounts=countRelationshipBuckets(pool);
-      const relSegs=[
-        {label:'Single',value:relCounts.Single||0,color:RATIO_COLORS.single},
-        {label:'Partnered',value:relCounts.Partnered||0,color:RATIO_COLORS.partnered}
-      ];
-      const typeCounts=countGuestTypeBuckets(pool);
-      const typeSegs=[
-        {label:'New Guest',value:typeCounts['New Guest']||0,color:RATIO_COLORS.newGuest},
-        {label:'Returning',value:typeCounts.Returning||0,color:RATIO_COLORS.returning}
-      ];
-      const desireCounts=countDesireBuckets(pool);
-      const desireSegs=[
-        {label:'Exhibitionist',value:desireCounts.Exhibitionist||0,color:RATIO_COLORS.exhibitionist},
-        {label:'Unknown',value:desireCounts.Unknown||0,color:RATIO_COLORS.unknown},
-        {label:'Voyeur',value:desireCounts.Voyeur||0,color:RATIO_COLORS.voyeur}
-      ];
-      document.getElementById('main').innerHTML=`<div class="ratios-wrap"><div class="ratios-grid">${
-        ratioCardHtml('Gender',genderSegs,['Female','Male','Other'])
-      }${ratioCardHtml('Guest Type',typeSegs,['New Guest','Returning'])
-      }${ratioCardHtml('Relationship Status',relSegs,['Single','Partnered'])
-      }${ratioCardHtml('Desire',desireSegs,['Exhibitionist','Unknown','Voyeur'])
-      }</div></div>`;
-    }
-
-    /** Legacy: first `Date: …` line in Notes when there is no dedicated Date field value. */
-    function parseDateNameFromNotes(notes){
-      if(notes==null) return '';
-      for(const line of String(notes).split(/\n/)){
-        const t=line.replace(/\*+/g,' ').trim();
-        const m=t.match(/^\*?\s*Date\s*:\s*(.+)$/i);
-        if(m) return m[1].replace(/\*+$/,'').trim();
-      }
-      return '';
-    }
-    function dateLineFromGuest(g){
-      const f=String(g.guestDate||'').trim();
-      if(f) return f;
-      return parseDateNameFromNotes(g.doorNotes);
-    }
-
-    function toG(r){
-      const f=r.fields;
-      const nDoor=fieldStr(f,F_NOTES)||fieldStr(f,['Note']);
-      const gDate=fieldStrGuestDate(f);
-      const wbArr=parseWristbandsFromFields(f);
-      const hasGold=wbArr.includes('Gold');
-      const tableGuest=guestIsTableFromFields(f);
-      const stiVerified=stiVerifiedFromFields(f,wbArr);
-      const ndaRaw=f.NDA==null||f.NDA===''?'No':String(f.NDA);
-      const phoneRaw=f.Phone==null||f.Phone===''?'':String(f.Phone);
-      const emailRaw=f.Email==null||f.Email===''?'':String(f.Email);
-      return {
-        id:r.id,name:f['Full Name']||'',checkedIn:!!fieldAny(f,F_CHECKED_IN),
-        rsvp:f.RSVP==null||f.RSVP===''?'':String(f.RSVP),
-        photo:f.Photo&&f.Photo[0]?f.Photo[0].url:null,
-        list:Array.isArray(f.List)?f.List.filter(Boolean).join(', '):(f.List==null||f.List===''?'':String(f.List)),
-        nda:ndaRaw,
-        ndaSigned:ndaIsSigned(ndaRaw),
-        phone:phoneRaw,
-        tableGuest,
-        stiVerified,
-        wristbands:wbArr,
-        wristband:wbArr.includes('Gold')?'Gold':(wbArr.includes('Black')?'Black':''),
-        email:emailRaw,
-        sti:stiVerified,
-        coatCheck:fieldStr(f,F_COAT),
-        phoneCheckNum:fieldStr(f,F_PHONE_CHECK),
-        doorNotes:nDoor,
-        doorNotesExtra:fieldStr(f,F_NOTES_EXTRA),
-        seatAssignment:fieldStrSeatAssignment(f),
-        partnerId:null,
-        dateClusterMates:[],
-        /** +1 name(s) from the **Date** field (or fallbacks); legacy `Date: …` in Notes if empty. */
-        guestDate:gDate,
-        cabaret:!!fieldAny(f,F_CABARET),
-        gender:fieldGenderFromRecord(f),
-        partnerGender:fieldPartnerGenderFromRecord(f),
-        partnerName:fieldPartnerNameFromRecord(f),
-        appType:fieldAppTypeFromRecord(f),
-        desire:fieldValueLine(f,F_DESIRE),
-        guestTypeDirect:fieldGuestTypeDirectFromRecord(f),
-        relationshipDirect:fieldRelationshipDirectFromRecord(f),
-        coupleFlag:recordHasCoupleFlag(f),
-        hasRelationshipLink:recordHasRelationshipLink(f)
-      };
-    }
-
-    function resolveDatePartnersFromGuests(guests){
-      guests.forEach(g=>{ g.partnerId=null; g.dateClusterMates=[]; });
-    }
-
     function guestMatchesSearch(g,q){
       const em=(g.email||'').toLowerCase();
       return (g.name||'').toLowerCase().includes(q)||(g.phone||'').includes(q)||em.includes(q)
-        ||String(g.phoneCheckNum||'').toLowerCase().includes(q)
-        ||String(dateLineFromGuest(g)||'').toLowerCase().includes(q)
-        ||String(g.seatAssignment||'').toLowerCase().includes(q);
+        ||String(g.phoneCheckNum||'').toLowerCase().includes(q);
     }
-
-    async function refreshGuestsQuiet(){
-      if(!curTable) return;
-      try{
-        let recs=[],offset=null;
-        do{
-          const d=await req(offset?'?offset='+offset:'');
-          if(d.records)recs=recs.concat(d.records);
-          offset=d.offset;
-        }while(offset);
-        for(const r of recs){
-          const f=r&&r.fields?r.fields:{};
-          for(const k of Object.keys(f)) tableFields.add(k);
-        }
-        guests=sortGuestsByName(recs.map(toG));
-        resolveDatePartnersFromGuests(guests);
-        refreshRatiosIfOpen();
-      }catch(_){}
-    }
-
     async function load(){
       document.getElementById('main').innerHTML='<div class="cstate"><div class="spinner"></div><div class="cstate-txt">Opening the doors…</div></div>';
       buildTabs();
       try{
-        let recs=[],offset=null;
-        do{
-          const d=await req(offset?'?offset='+offset:'');
-          if(d.records)recs=recs.concat(d.records);
-          offset=d.offset;
-        }while(offset);
-        tableFields=new Set();
-        for(const r of recs){
-          const f=r&&r.fields?r.fields:{};
-          for(const k of Object.keys(f)) tableFields.add(k);
-        }
-        seedCabaretTableFields();
-        guests=sortGuestsByName(recs.map(toG));
-        resolveDatePartnersFromGuests(guests);
+        ensurePracticeAuth();
+        await new Promise(r=>setTimeout(r,280));
+        guests=sortGuestsByName(cloneMockGuests(curTable));
         render();
-        flushPendingQueue().catch(()=>{});
       }catch(e){
-        document.getElementById('main').innerHTML=`<div class="cstate"><div class="cstate-txt" style="color:var(--red)">Error: ${esc(e.message)}</div><br><button onclick="resetKey()" style="margin-top:10px;padding:8px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;">Reset Door Password</button></div>`;
+        document.getElementById('main').innerHTML=`<div class="cstate"><div class="cstate-txt" style="color:var(--red)">${esc(e.message||'Could not load')}</div><br><button onclick="resetKey()" style="margin-top:10px;padding:8px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;">Reset practice password</button></div>`;
       }
     }
-
-    function updateRatiosBtn(){
-      const btn=document.getElementById('ratiosToolbarBtn');
-      if(!btn) return;
-      const on=curTab==='ratios';
-      btn.classList.toggle('active',on);
-      btn.setAttribute('aria-pressed',on?'true':'false');
-    }
-
     function buildTabs(){
       const tabs=getTabsForCurrentTable();
-      if(curTab!=='ratios' && !tabs.some(t=>t.id===curTab)) curTab=tabs[0].id;
+      if(!tabs.some(t=>t.id===curTab)) curTab=tabs[0].id;
       const wrap=document.getElementById('tabs');
-      wrap.className='tabs'+(isObscuraTable()?' tabs-obscura':' tabs-'+tabs.length);
-      wrap.setAttribute('aria-label', isObscuraTable()?'Filter by list assignment':'Guest segments');
-      wrap.innerHTML=tabs.map(t=>{
-        const active=curTab!=='ratios'&&t.id===curTab;
-        return `<button type="button" role="tab" class="tab ${active?'active':''}" aria-selected="${active?'true':'false'}" onclick="setTab('${esc(t.id)}')">${esc(t.lbl)}</button>`;
-      }).join('');
-      updateRatiosBtn();
-      scrollActiveTabIntoView(false);
+      wrap.className='tabs';
+      wrap.setAttribute('aria-label','Guest segments');
+      wrap.innerHTML=tabs.map(t=>
+        `<button type="button" role="tab" class="tab ${t.id===curTab?'active':''}" aria-selected="${t.id===curTab?'true':'false'}" onclick="setTab('${esc(t.id)}')">${esc(t.lbl)}</button>`
+      ).join('');
     }
-
-    function toggleRatios(){
-      if(curTab==='ratios'){
-        curTab=lastGuestTab||defaultTabForCurrentTable();
-        buildTabs();
-        render();
-        return;
-      }
-      lastGuestTab=curTab;
-      curTab='ratios';
-      buildTabs();
-      render();
-    }
-
-    function setTab(id){
-      if(curTab!=='ratios') lastGuestTab=id;
-      curTab=id;
-      buildTabs();
-      scrollActiveTabIntoView(true);
-      render();
-    }
-
-    function applyTabFilter(list){
-      if(isObscuraTable()){
-        if(curTab==='all') return list;
-        const t=OBSCURA_TABS.find(x=>x.id===curTab);
-        if(t&&t.match) return list.filter(g=>listFieldMatches(g,t.match));
-        return list;
-      }
-      if(isDoNotDisturbTable()){
-        if(curTab==='all') return list.filter(g=>!listFieldMatches(g,'working'));
-        if(curTab==='dinner') return list.filter(g=>listFieldMatches(g,'dinner'));
-        if(curTab==='nightcap'||curTab==='after') return list.filter(g=>listFieldMatches(g,'nightcap'));
-        if(curTab==='working') return list.filter(g=>listFieldMatches(g,'working'));
-        return list;
-      }
-      if(isRunaTable()){
-        if(curTab==='all') return list.filter(g=>!listFieldMatches(g,'working'));
-        if(curTab==='working') return list.filter(g=>listFieldMatches(g,'working'));
-        if(curTab==='vip') return list.filter(g=>listFieldMatches(g,'vip'));
-        if(curTab==='tables') return list.filter(g=>listFieldMatches(g,'table')||listFieldMatches(g,'tables'));
-        if(curTab==='ga') return list.filter(g=>listFieldMatches(g,'ga'));
-        return list;
-      }
-      if(curTab==='tables') return list.filter(g=>listFieldMatches(g,'table')||listFieldMatches(g,'tables'));
-      else if(curTab==='working') return list.filter(g=>listFieldMatches(g,'working'));
-      else if(curTab==='all') return list.filter(g=>!listFieldMatches(g,'working'));
-      else if(curTab==='lust') return list.filter(g=>g.cabaret&&!listFieldMatches(g,'working'));
-      else if(curTab==='garden') return list.filter(g=>!g.cabaret&&!listFieldMatches(g,'working'));
-      else if(curTab==='guest') return list.filter(g=>{
-        const segs=listSegmentsLower(g);
-        if(!segs.length) return true;
-        return !listFieldMatches(g,'working');
-      });
-      return list;
-    }
-
-    function buildObscuraAllGroupedMainHtml(list){
-      const used=new Set();
-      let html='<div class="ob-all-wrap">';
-      for(const sec of OBSCURA_ALL_SECTIONS){
-        const bucket=list.filter(g=>{
-          if(used.has(g.id)) return false;
-          if(!listFieldMatches(g,sec.match)) return false;
-          used.add(g.id);
-          return true;
-        });
-        if(!bucket.length) continue;
-        html+=`<section class="ob-sec-wrap"><h2 class="ob-sec">${esc(sec.lbl)}</h2><div class="grid">${bucket.map(gCard).join('')}</div></section>`;
-      }
-      const rest=list.filter(g=>!used.has(g.id));
-      if(rest.length){
-        html+=`<section class="ob-sec-wrap"><h2 class="ob-sec">OTHER</h2><div class="grid">${rest.map(gCard).join('')}</div></section>`;
-      }
-      html+='</div>';
-      return html;
-    }
-
+    function setTab(id){ curTab=id; buildTabs(); render(); }
     function guestMatchesTablePartyToken(name,token){
       const n=String(name||'').trim().toLowerCase();
       const t=String(token||'').trim().toLowerCase();
@@ -1624,14 +661,14 @@
       const groups=[];
       buckets.forEach((members,i)=>{
         if(!members.length) return;
-        groups.push({order:i, members:sortTablePartyMembers(members)});
+        groups.push({members:sortTablePartyMembers(members)});
       });
       for(const g of sortTablePartyMembers(ungrouped)){
-        groups.push({order:1000+groups.length, members:[g]});
+        groups.push({members:[g]});
       }
       return groups;
     }
-    function filterTableListForSearch(list,q,byIdAll){
+    function filterTableListForSearch(list,q){
       if(!q) return list;
       const include=new Set();
       const byParty=new Map();
@@ -1643,14 +680,7 @@
         }
       }
       for(const g of list){
-        let hit=guestMatchesSearch(g,q);
-        if(!hit){
-          for(const id of (g.dateClusterMates||[])){
-            const p=byIdAll[id];
-            if(p && guestMatchesSearch(p,q)){ hit=true; break; }
-          }
-        }
-        if(!hit) continue;
+        if(!guestMatchesSearch(g,q)) continue;
         include.add(g.id);
         const idx=tablePartyGroupIndexForGuest(g);
         if(idx>=0){
@@ -1666,26 +696,23 @@
         `<div class="table-party"><div class="table-party-inner">${grp.members.map(gCard).join('')}</div></div>`
       ).join('')}</div>`;
     }
-
+    function applyTabFilter(list){
+      if(curTab==='tables') return list.filter(g=>listFieldMatches(g,'table')||listFieldMatches(g,'tables'));
+      if(curTab==='working') return list.filter(g=>listFieldMatches(g,'working'));
+      if(curTab==='all') return list.filter(g=>!listFieldMatches(g,'working'));
+      return list.filter(g=>{
+        const segs=listSegmentsLower(g);
+        if(!segs.length) return true;
+        return !listFieldMatches(g,'working');
+      });
+    }
     function render(){
-      if(curTab==='ratios'){
-        const pool=guestsForRatios();
-        const chk=pool.filter(g=>g.checkedIn).length;
-        const pend=pendingCountForTable(curTable);
-        const pendHtml=pend?`<div class="stat stat-pending" role="button" tabindex="0" title="Tap to retry sync to Airtable" onclick="retryPendingSync()"><b>${pend}</b> queued</div>`:'';
-        document.getElementById('stats').innerHTML=`<div class="stat"><b>${pool.length}</b> in ratios</div><div class="stat"><b>${chk}</b> checked in</div>${pendHtml}`;
-        renderRatios();
-        return;
-      }
       const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
       let list=applyTabFilter(guests);
-      const byIdAll=Object.fromEntries(guests.map(x=>[x.id,x]));
-      if(curTab==='tables' && eventTabMode()==='atelier'){
-        if(q) list=filterTableListForSearch(list,q,byIdAll);
+      if(curTab==='tables'){
+        if(q) list=filterTableListForSearch(list,q);
         const chk=list.filter(g=>g.checkedIn).length;
-        const pend=pendingCountForTable(curTable);
-        const pendHtml=pend?`<div class="stat stat-pending" role="button" tabindex="0" title="Tap to retry sync to Airtable" onclick="retryPendingSync()"><b>${pend}</b> queued</div>`:'';
-        document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>${pendHtml}`;
+        document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>`;
         if(!list.length){
           document.getElementById('main').innerHTML='<div class="cstate"><div class="cstate-txt">No guests found</div></div>';
           return;
@@ -1693,55 +720,26 @@
         document.getElementById('main').innerHTML=renderTablesGrid(list);
         return;
       }
-      if(q) list=list.filter(g=>{
-        if(guestMatchesSearch(g,q)) return true;
-        for(const id of (g.dateClusterMates||[])){
-          const p=byIdAll[id];
-          if(p && guestMatchesSearch(p,q)) return true;
-        }
-        return false;
-      });
+      if(q) list=list.filter(g=>guestMatchesSearch(g,q));
       list=[...list].sort((a,b)=>{
-        if(isObscuraTable()){
-          if(!!a.checkedIn!==!!b.checkedIn) return a.checkedIn?1:-1;
-          const sa=String(a.seatAssignment||'').trim().toLowerCase();
-          const sb=String(b.seatAssignment||'').trim().toLowerCase();
-          if(sa!==sb) return sa.localeCompare(sb);
-          return (a.name||'').localeCompare((b.name||''),undefined,{sensitivity:'base'});
-        }
         if(!!a.checkedIn!==!!b.checkedIn) return a.checkedIn?1:-1;
         return (a.name||'').localeCompare((b.name||''),undefined,{sensitivity:'base'});
       });
       const chk=list.filter(g=>g.checkedIn).length;
-      const pend=pendingCountForTable(curTable);
-      const pendHtml=pend?`<div class="stat stat-pending" role="button" tabindex="0" title="Tap to retry sync to Airtable" onclick="retryPendingSync()"><b>${pend}</b> queued</div>`:'';
-      document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>${pendHtml}`;
+      document.getElementById('stats').innerHTML=`<div class="stat"><b>${list.length}</b> guests</div><div class="stat"><b>${chk}</b> checked in</div>`;
       if(!list.length){
         document.getElementById('main').innerHTML='<div class="cstate"><div class="cstate-txt">No guests found</div></div>';
         return;
       }
-      if(isObscuraTable()&&curTab==='all'){
-        document.getElementById('main').innerHTML=buildObscuraAllGroupedMainHtml(list);
-        return;
-      }
       document.getElementById('main').innerHTML=`<div class="grid">${list.map(gCard).join('')}</div>`;
     }
-
     function gCard(g){
       const ph=g.photo
         ?`<img class="card-photo" src="${esc(g.photo)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="card-init" style="display:none">${ini(g.name)}</div>`
         :`<div class="card-init">${ini(g.name)}</div>`;
-      const showGoldDot=isDoNotDisturbTable()
-        ?!!(g.wristbands&&g.wristbands.includes('Gold'))
-        :(g.tableGuest||!!(g.wristbands&&g.wristbands.includes('Gold')));
+      const showGoldDot=g.tableGuest||!!(g.wristbands&&g.wristbands.includes('Gold'));
       const dot=(showGoldDot?`<span class="wb-dot wb-gold"></span>`:'')+(g.stiVerified?`<span class="wb-dot wb-black"></span>`:'');
-      const cabTag=g.cabaret?'<span class="card-cabaret" title="Cabaret">🎭</span>':'';
-      let listBody=esc(g.list||'');
-      if(isObscuraTable()&&!isObscuraGaGuest(g)){
-        const seat=String(g.seatAssignment||'').trim();
-        if(seat) listBody+=` · ${esc(seat)}`;
-      }
-      const listTag=`<div class="card-tag">${cabTag}${dot}${listBody}</div>`;
+      const listTag=`<div class="card-tag">${dot}${esc(g.list||'')}</div>`;
       return `<div class="card${g.checkedIn?' checked':''}" onclick="openDetail('${g.id}')">
         ${ph}
         <div class="card-body">
@@ -1750,7 +748,6 @@
         </div>
       </div>`;
     }
-
     function openDetail(id){
       const g=guests.find(x=>x.id===id); if(!g) return;
       curG=g;
@@ -1759,15 +756,12 @@
       const phoneCheckVal=loc.phoneCheck!=null?loc.phoneCheck:(g.phoneCheckNum||'');
       const notesVal=loc.notes!=null?loc.notes:(g.doorNotes||'');
       const ph=g.photo?`<img class="detail-avatar" src="${esc(g.photo)}" alt="${esc(g.name)}">`:`<div class="detail-init">${ini(g.name)}</div>`;
-      const hasGoldPill=isDoNotDisturbTable()
-        ?!!(g.wristbands&&g.wristbands.includes('Gold'))
-        :(g.tableGuest||!!(g.wristbands&&g.wristbands.includes('Gold')));
+      const hasGoldPill=g.tableGuest||!!(g.wristbands&&g.wristbands.includes('Gold'));
       const wbPill=buildWBDisplayHTML(hasGoldPill,!!g.stiVerified);
       const ndaSig=typeof g.ndaSigned==='boolean'?g.ndaSigned:ndaIsSigned(g.nda);
       const ndaRow=!ndaSig
         ?`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="${NDA_FORM_URL}" target="_blank" rel="noopener noreferrer">🔗</a></div>`
         :'';
-
       document.getElementById('detailContent').innerHTML=`
         <div class="detail-head">
           <div class="detail-nav"><button type="button" class="back-btn" onclick="closeDetail()" aria-label="Back to guest list">BACK</button></div>
@@ -1796,22 +790,18 @@
               </div>
               <label class="toggle"><input type="checkbox" id="dSTI" ${g.stiVerified?'checked':''} onchange="onSTI(this)"><span class="slider"></span></label>
             </div>
-            ${!isDoNotDisturbTable()?`<div class="det-row">
+            <div class="det-row">
               <div class="det-row-left">
                 <div class="det-lbl">Tables</div>
                 <div class="det-sublbl">💛 Table guests receive GOLD WRISTBANDS</div>
               </div>
               <label class="toggle"><input type="checkbox" id="dTbl" ${g.tableGuest?'checked':''} onchange="onTable(this)"><span class="slider"></span></label>
-            </div>`:''}
+            </div>
             <div class="det-row">
               <div class="det-lbl">🤫 NDA Signed:</div>
               <label class="toggle"><input type="checkbox" id="dNDA" ${ndaSig?'checked':''} onchange="onNDA(this)"><span class="slider"></span></label>
             </div>
             <div id="ndaBox">${ndaRow}</div>
-            ${hasCabaretField()?`<div class="det-row">
-              <div class="det-lbl">🎭 Cabaret:</div>
-              <label class="toggle"><input type="checkbox" id="dCabaret" ${g.cabaret?'checked':''} onchange="autoSave()"><span class="slider"></span></label>
-            </div>`:''}
           </div>
           <div class="det-card">
             <div class="det-input-wrap">
@@ -1836,219 +826,95 @@
       document.getElementById('detailView').style.display='block';
       document.getElementById('detailView').scrollTop=0;
     }
-
     function updateWBDisplay(){
       const box=document.getElementById('wbPillDisplay');
       const dTbl=document.getElementById('dTbl');
       const sti=document.getElementById('dSTI');
       if(!box||!curG)return;
-      const cTbl=isDoNotDisturbTable()
-        ?!!(curG.wristbands&&curG.wristbands.includes('Gold'))
-        :(dTbl?dTbl.checked:guestIsTableGuest(curG));
+      const cTbl=dTbl?dTbl.checked:guestIsTableGuest(curG);
       const cS=sti && sti.checked;
       box.innerHTML=buildWBDisplayHTML(cTbl,cS);
     }
-
-    function onTable(cb){
-      updateWBDisplay();
-      autoSave();
-    }
-
-    function onSTI(cb){
-      updateWBDisplay();
-      autoSave();
-    }
-
+    function onTable(cb){ updateWBDisplay(); autoSave(); }
+    function onSTI(cb){ updateWBDisplay(); autoSave(); }
     function onNDA(cb){
       document.getElementById('ndaBox').innerHTML=cb.checked?'':`<div class="nda-row"><div class="nda-text">🔴 If NDA is unsigned, please click here and have them sign:</div><a class="nda-link" href="${NDA_FORM_URL}" target="_blank" rel="noopener noreferrer">🔗</a></div>`;
       autoSave();
     }
-
     function onAddNDAChange(cb){
       const hint=document.getElementById('mNdaHint');
       if(!hint)return;
       hint.style.display=cb.checked?'none':'flex';
     }
-
-    function readDoorTextFromDOM(){
+    function saveLocal(){
+      if(!curG)return;
+      clearTimeout(textSaveTimer);
       const coat=document.getElementById('dCoat');
       const phoneCheck=document.getElementById('dPhoneCheck');
       const notes=document.getElementById('dNotes');
-      const n2el=document.getElementById('dNotes2');
-      if(!coat||!notes) return {vCoat:'',vPhone:'',vNotes:'',v2:'',fields:{}};
+      if(!coat||!notes)return;
       const vCoat=coat.value.trim();
       const vPhone=phoneCheck?phoneCheck.value.trim():'';
       const vNotes=notes.value.trim();
-      const fields={};
-      const kC=pickField(F_COAT);
-      if(kC) fields[kC]=vCoat;
-      const kP=pickPhoneCheckField();
-      if(kP) fields[kP]=vPhone;
-      const kN=pickField(F_NOTES);
-      if(kN) fields[kN]=vNotes;
-      let v2='';
-      if(n2el && hasNotesExtraField()){
-        v2=n2el.value.trim();
-        const k2=pickField(F_NOTES_EXTRA);
-        if(k2) fields[k2]=v2;
-      }
-      return {vCoat,vPhone,vNotes,v2,fields};
-    }
-
-    function applyDoorTextToGuest(vCoat,vPhone,vNotes,v2){
-      if(!curG) return;
-      const locNext={...local[curG.id],coat:vCoat,phoneCheck:vPhone,notes:vNotes};
-      if(hasNotesExtraField()) locNext.notes2=v2;
-      local[curG.id]=locNext;
+      const prev=local[curG.id]||{coat:curG.coatCheck||'',phoneCheck:curG.phoneCheckNum||'',notes:curG.doorNotes||''};
+      const same=(prev.coat||'')===vCoat && (prev.phoneCheck||'')===vPhone && (prev.notes||'')===vNotes;
+      local[curG.id]={coat:vCoat,phoneCheck:vPhone,notes:vNotes};
       const i=guests.findIndex(x=>x.id===curG.id);
       if(i>-1){
-        const gNext={...guests[i],coatCheck:vCoat,phoneCheckNum:vPhone,doorNotes:vNotes};
-        if(hasNotesExtraField()) gNext.doorNotesExtra=v2;
-        guests[i]=gNext;
-        if(curG && curG.id===guests[i].id) curG=guests[i];
+        guests[i]={...guests[i],coatCheck:vCoat,phoneCheckNum:vPhone,doorNotes:vNotes};
+        if(curG.id===guests[i].id) curG=guests[i];
       }
+      if(!same) showToast();
     }
-
-    function detailStillOpen(recordId,myGen){
-      return !!(curG && curG.id===recordId && myGen===saveGen);
-    }
-
-    function readDetailToggleState(){
-      const dCI=document.getElementById('dCI');
-      const dNDA=document.getElementById('dNDA');
-      const dTbl=document.getElementById('dTbl');
-      const stiEl=document.getElementById('dSTI');
-      const dCabaret=document.getElementById('dCabaret');
-      if(!curG||!dCI||!dNDA) return null;
-      const cI=dCI.checked;
-      const cN=dNDA.checked;
-      const cTbl=isDoNotDisturbTable()
-        ?!!(curG.wristbands&&curG.wristbands.includes('Gold'))
-        :(dTbl?dTbl.checked:guestIsTableGuest(curG));
-      const cS=stiEl && stiEl.checked;
-      const cCab=dCabaret?dCabaret.checked:!!curG.cabaret;
-      const wb=[];
-      if(isDoNotDisturbTable()||cTbl) wb.push('Gold');
-      if(cS) wb.push('Black');
-      const newList=isDoNotDisturbTable()?curG.list:setGuestListWithTable(curG, cTbl);
-      const criticalFields={[pickField(F_CHECKED_IN)]:cI,'NDA':cN?'Signed':'No'};
-      const kCab=pickField(F_CABARET);
-      if(kCab) criticalFields[kCab]=cCab;
-      const wristFields={ [pickField(F_WRISTBAND)]:wb };
-      wristFields[pickField(F_STI)]=cS;
-      const kList=pickField(F_LIST);
-      if(kList&&!isDoNotDisturbTable()) wristFields[kList]=listValueForAirtable(newList);
-      const applyLocal=()=>{
-        const i=guests.findIndex(g=>g.id===curG.id);
-        if(i>-1){
-          guests[i]={
-            ...guests[i],
-            checkedIn:cI,
-            nda:cN?'Signed':'No',
-            ndaSigned:!!cN,
-            tableGuest:isDoNotDisturbTable()?wb.includes('Gold'):cTbl,
-            list:newList,
-            stiVerified:cS,
-            wristbands:wb,
-            wristband:wb.includes('Gold')?'Gold':(wb.includes('Black')?'Black':''),
-            sti:cS,
-            cabaret:cCab
-          };
-          if(curG && curG.id===guests[i].id) curG=guests[i];
-        }
-      };
-      return {criticalFields,wristFields,applyLocal};
-    }
-
-    function doorTextUnchanged(vCoat,vPhone,vNotes,v2){
-      if(!curG) return true;
-      const coat=String(curG.coatCheck||'');
-      const phone=String(curG.phoneCheckNum||'');
-      const notes=String(curG.doorNotes||'');
-      const extra=String(curG.doorNotesExtra||'');
-      return vCoat===coat && vPhone===phone && vNotes===notes && (!hasNotesExtraField()||v2===extra);
-    }
-
-    async function saveLocal(){
-      clearTimeout(textSaveTimer);
-      if(!curG)return;
-      const recordId=curG.id;
-      const myGen=saveGen;
-      const {vCoat,vPhone,vNotes,v2,fields}=readDoorTextFromDOM();
-      if(!document.getElementById('dCoat')||!document.getElementById('dNotes')) return;
-      if(Object.keys(fields).length===0) return;
-      if(doorTextUnchanged(vCoat,vPhone,vNotes,v2)) return;
-      applyDoorTextToGuest(vCoat,vPhone,vNotes,v2);
-      try{
-        await patchGuestResilient(recordId, fields);
-        if(!detailStillOpen(recordId,myGen)) return;
-        showToast();
-        refreshRatiosIfOpen();
-      }catch(e){
-        console.error('Door fields save failed',e);
-        if(!detailStillOpen(recordId,myGen)) return;
-        enqueuePending(recordId, curTable, fields);
-        try{ render(); }catch(_){}
-      }
-    }
-
     let textSaveTimer=null;
     function scheduleTextSave(){
       clearTimeout(textSaveTimer);
       textSaveTimer=setTimeout(()=>{ saveLocal(); },120);
     }
-
-    async function saveDetailToggles(recordId,myGen){
-      if(!curG||curG.id!==recordId) return;
-      const state=readDetailToggleState();
-      if(!state) return;
-      const {criticalFields,wristFields,applyLocal}=state;
-      const fields={...criticalFields,...wristFields};
-      applyLocal();
-      try{
-        await patchGuestResilient(recordId, fields);
-      }catch(e){
-        console.error('Door toggle save failed',e);
-        enqueuePending(recordId, curTable, fields);
-        try{ render(); }catch(_){}
-        return;
-      }
-      if(!detailStillOpen(recordId,myGen)) return;
-      showToast();
-      try{ render(); }catch(_){}
-      refreshRatiosIfOpen();
-    }
-
     function autoSave(){
       if(!curG) return;
-      const recordId=curG.id;
-      const myGen=saveGen;
-      saveDetailToggles(recordId,myGen);
+      const dCI=document.getElementById('dCI');
+      const dNDA=document.getElementById('dNDA');
+      const dTbl=document.getElementById('dTbl');
+      const stiEl=document.getElementById('dSTI');
+      if(!dCI||!dNDA)return;
+      const cI=dCI.checked;
+      const cN=dNDA.checked;
+      const cTbl=dTbl?dTbl.checked:guestIsTableGuest(curG);
+      const cS=stiEl && stiEl.checked;
+      const wb=[];
+      if(cTbl) wb.push('Gold');
+      if(cS) wb.push('Black');
+      const newList=setGuestListWithTable(curG, cTbl);
+      const i=guests.findIndex(g=>g.id===curG.id);
+      if(i>-1){
+        guests[i]={
+          ...guests[i],
+          checkedIn:cI,
+          nda:cN?'Signed':'No',
+          ndaSigned:!!cN,
+          tableGuest:cTbl,
+          list:newList,
+          stiVerified:cS,
+          wristbands:wb,
+          wristband:wb.includes('Gold')?'Gold':(wb.includes('Black')?'Black':''),
+          sti:cS
+        };
+        curG=guests[i];
+      }
+      showToast();
+      try{ render(); }catch(_){}
     }
-
     function closeDetail(){
       clearTimeout(textSaveTimer);
-      const recordId=curG&&curG.id;
-      const myGen=saveGen;
-      const text=curG?readDoorTextFromDOM():null;
-      const textDirty=!!(curG&&text&&!doorTextUnchanged(text.vCoat,text.vPhone,text.vNotes,text.v2));
-      if(textDirty) applyDoorTextToGuest(text.vCoat,text.vPhone,text.vNotes,text.v2);
+      const textDirty=!!curG;
+      if(textDirty) saveLocal();
       saveGen++;
       document.getElementById('detailView').style.display='none';
       document.getElementById('app').style.display='block';
       curG=null;
       render();
-      if(textDirty&&recordId&&Object.keys(text.fields).length){
-        patchGuestResilient(recordId, text.fields).then(()=>{
-          if(myGen+1===saveGen) showToast();
-        }).catch(e=>{
-          console.error('Door close save failed',e);
-          enqueuePending(recordId, curTable, text.fields);
-          try{ render(); }catch(_){}
-        });
-      }
     }
-
     function fitAddModal(){
       const bg=document.getElementById('addModal');
       const sheet=bg&&bg.querySelector('.modal');
@@ -2073,8 +939,6 @@
       const mb=document.getElementById('addModalBody');
       if(mb) mb.className='modal-body add-at';
       document.getElementById('aN').focus();
-      const wr=document.getElementById('addWristNdaBlock');
-      if(wr) wr.style.display='';
       const mgb=document.getElementById('mGuestDateBlock');
       if(mgb) mgb.style.display='none';
       const mnl=document.getElementById('mNotesLbl');
@@ -2083,106 +947,69 @@
       if(mn) mn.placeholder='Any additional info including who approved them (Sam, Daniel & LouLou are the only ones who can)';
       const nda=document.getElementById('mNDA');
       if(nda) onAddNDAChange(nda);
-      const cabRow=document.getElementById('mCabaretRow');
-      if(cabRow) cabRow.style.display=hasCabaretField()?'flex':'none';
       updateAddWbPills();
     }
-
     function closeAdd(){
       document.getElementById('addModal').classList.remove('open');
       fitAddModal();
-      const addBtn=document.getElementById('addBtn');
-      if(addBtn){ addBtn.disabled=false; addBtn.textContent='Add Guest'; }
       const mbReset=document.getElementById('addModalBody');
       if(mbReset) mbReset.className='modal-body add-at';
-      const mgd=document.getElementById('mGuestDate');
-      if(mgd) mgd.value='';
       ['aN','mCoat','mPhoneCheck','mNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-      ['mCI','mNDA','mSTI','mTbl','mCabaret'].forEach(id=>{
+      ['mCI','mNDA','mSTI','mTbl'].forEach(id=>{
         const n=document.getElementById(id);
         if(n) n.checked=false;
       });
       onAddNDAChange({checked:false});
-      const wr=document.getElementById('addWristNdaBlock');
-      if(wr) wr.style.display='';
       const mnl=document.getElementById('mNotesLbl');
       if(mnl) mnl.innerHTML='📝 Door Notes: <span style="color:var(--red)">Required</span>';
-      const mgbC=document.getElementById('mGuestDateBlock');
-      if(mgbC) mgbC.style.display='none';
       const mn=document.getElementById('mNotes');
       if(mn) mn.placeholder='Any additional info including who approved them (Sam, Daniel & LouLou are the only ones who can)';
       updateAddWbPills();
     }
-
-    async function doAdd(){
+    function doAdd(){
       const name=document.getElementById('aN').value.trim();
       if(!name){alert('Guest name required');return;}
       const btn=document.getElementById('addBtn');
-      if(btn.disabled) return;
-      btn.disabled=true;
       btn.textContent='Adding…';
-
       const mTbl=document.getElementById('mTbl');
       const tableOn=!!(mTbl&&mTbl.checked);
       const mSTI=document.getElementById('mSTI');
       const stiOn=!!(mSTI&&mSTI.checked);
-
-      const fields={'Full Name':name};
-      if(document.getElementById('mCI').checked)fields[pickField(F_CHECKED_IN)]=true;
-      if(document.getElementById('mNDA').checked)fields['NDA']='Signed';
-      const mCab=document.getElementById('mCabaret');
-      const kCabAdd=pickField(F_CABARET);
-      if(kCabAdd && mCab && mCab.checked) fields[kCabAdd]=true;
-
       const wb=[];
-      if(isDoNotDisturbTable()) wb.push('Gold');
-      else if(tableOn) wb.push('Gold');
+      if(tableOn) wb.push('Gold');
       if(stiOn) wb.push('Black');
-      fields[pickField(F_STI)]=stiOn;
-      if(wb.length) fields[pickField(F_WRISTBAND)]=wb;
-      const kList=pickField(F_LIST);
-      if(kList&&!isDoNotDisturbTable()) fields[kList]=listValueForAirtable(tableOn?'Table':(isRunaTable()?'GA':'Guest'));
-
+      const id='mock-'+Date.now();
+      const g=normalizeMockGuest({
+        id,
+        name,
+        checkedIn:!!document.getElementById('mCI').checked,
+        rsvp:'',
+        photo:face((Date.now()%70)+1),
+        list:tableOn?'Table':'Guest',
+        nda:document.getElementById('mNDA').checked?'Signed':'No',
+        phone:'555-0199',
+        wristband:tableOn?'Gold':(stiOn?'Black':''),
+        email:'',
+      });
+      g.wristbands=wb;
+      g.tableGuest=tableOn;
+      g.stiVerified=stiOn;
       const coat=document.getElementById('mCoat').value.trim();
       const phoneChk=document.getElementById('mPhoneCheck')?document.getElementById('mPhoneCheck').value.trim():'';
       const notes=document.getElementById('mNotes').value.trim();
-
-      try{
-        const d=await req('',{method:'POST',body:JSON.stringify({fields})});
-        if(d.id){
-          if(coat||notes||phoneChk){
-            try{
-              const addPatch={};
-              const kC=pickField(F_COAT);
-              if(kC) addPatch[kC]=coat;
-              const kP=pickPhoneCheckField();
-              if(kP) addPatch[kP]=phoneChk;
-              const kN=pickField(F_NOTES);
-              if(kN) addPatch[kN]=notes;
-              if(Object.keys(addPatch).length) await patchGuestResilient(d.id,addPatch);
-            }catch(e2){
-              console.error('Door add guest extra fields failed',e2);
-            }
-          }
-          let rec=d;
-          try{ rec=await req('/'+d.id); }catch(_){}
-          local[d.id]={coat,notes,phoneCheck:phoneChk};
-          guests.push(toG(rec));
-          closeAdd();
-          render();
-          showToast('Saved ✓');
-        }
-      }catch(e){
-        console.error('Door add guest failed',e);
-        alert('Could not add guest: '+fmtErr(e));
-      }finally{
-        btn.disabled=false;
-        btn.textContent='Add Guest';
-      }
+      local[id]={coat,notes,phoneCheck:phoneChk};
+      g.coatCheck=coat;
+      g.phoneCheckNum=phoneChk;
+      g.doorNotes=notes;
+      guests.push(g);
+      guests=sortGuestsByName(guests);
+      closeAdd();
+      render();
+      showToast('Saved ✓');
+      btn.textContent='Add Guest';
     }
-
-    if(EVENTS.length===1) pickEv(0);
-    else{ ensureLandingSubtitle(); buildEvList(); }
+    ensureLandingSubtitle();
+    buildEvList();
     if(window.visualViewport){
       visualViewport.addEventListener('resize', fitAddModal);
       visualViewport.addEventListener('scroll', fitAddModal);
@@ -2197,11 +1024,6 @@
         body.scrollTop=Math.max(0, top-16);
       }, 60);
     });
-    document.addEventListener('visibilitychange', ()=>{
-      if(document.visibilityState==='visible') flushPendingQueue().catch(()=>{});
-    });
-    window.addEventListener('online', ()=>flushPendingQueue().catch(()=>{}));
-    setInterval(()=>flushPendingQueue().catch(()=>{}), 30000);
   </script>
 
 </body>
